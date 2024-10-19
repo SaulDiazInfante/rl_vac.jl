@@ -9,7 +9,7 @@ variable.
 ---
 """
 function get_stochastic_perturbation(
-    json_file_name="./data/parameters_model.json"
+    json_file_name="../data/parameters_model.json"
 )
     par = load_parameters(json_file_name)
     t_delivery = par.t_delivery

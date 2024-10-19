@@ -6,7 +6,7 @@ to details.
 """
 module rl_vac
 using JSON, DataFrames, Distributions
-using CSV, LaTeXStrings
+using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication
 #

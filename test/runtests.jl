@@ -86,9 +86,6 @@ time = x[:, 1]
 #
 # TODO: GetSolutionPath documentation
 @testset "jl" begin
-    @test(greet_vaccine_stock_management_with_mdps() == "Hello VaccineStockManagementWithMDPs!"
-    )
-
     # Test for load_parameters.jl
     @test(
         load_parameters(
