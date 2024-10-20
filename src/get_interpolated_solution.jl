@@ -24,7 +24,7 @@ function get_interpolated_solution(trajectory::DataFrame, line_time)
     df = DataFrame(interpolated_time_states, state_names)
     for state_name in state_names
         state = trajectory[!, Symbol(state_name)]
-        interpolated_state = LinearInterpolation(
+        interpolated_state = linear_interpolation(
             time, state, extrapolation_bc=Line())
         interpolated_state_eval = interpolated_state.(line_time)
         if state_name == "K_stock"
