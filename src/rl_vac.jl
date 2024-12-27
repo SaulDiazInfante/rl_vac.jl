@@ -8,7 +8,7 @@ module rl_vac
 using JSON, DataFrames, Distributions
 using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations
-using CairoMakie, StatsBase, MakiePublication
+using CairoMakie, StatsBase, MakiePublication, Printf
 #
 export load_parameters
 export get_stencil_projection

@@ -32,7 +32,7 @@ function montecarlo_sampling(
     n = sampling_size
     p = Progress(n, 1, "Sampling")
     for idx in 2:sampling_size
-        par = get_stochastic_perturbation()
+        par = get_stochastic_perturbation(json_file_name)
         x0, df = get_solution_path!(par)
         idx_path_par = idx * ones(Int64, size(par)[1])
         idx_path = idx * ones(Int64, size(df)[1])

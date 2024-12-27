@@ -47,6 +47,7 @@ function rhs_evaluation!(t, x, opt_policy, a_t, k, parameters)
         epsilon = parameters.epsilon[1]
         beta_s = parameters.beta_s[1]
         beta_a = parameters.beta_a[1]
+        N_pop = parameters.N[1]
 
         N_grid_size = parameters.N_grid_size[1]
         T = parameters.t_delivery[index+1] - parameters.t_delivery[index]
@@ -123,12 +124,24 @@ function rhs_evaluation!(t, x, opt_policy, a_t, k, parameters)
                 psi_v = -log(1.0 - X_C) / (t_upper_interval - t_lower_interval)
                 parameters.psi_v[index] = psi_v
                 a_t = psi_v
-                print("=================================")
+                scaled_psi_v = psi_v * N_pop
+                msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.2f", psi_v))"
+                msg_02 = "\n\t normalized Psi_V: $(
+                                @sprintf("%.2f", scaled_psi_v
+                        )
+                )"
+                print("\n=================================")
                 print("\nt_lower: ", x.t[1])
                 print("\nt_upper: ", t_upper_interval)
-                print("\nPsi_V rewcalibration: ", psi_v)
-                print("\nactual stock", k)
-                print("\nProjected Jabs", projected_jabs)
+                print("\nRecalibrating Psi_V: ")
+                print(msg_01)
+                print(msg_02)
+                print("\nActual stock: ", k * N_pop)
+                print("\n\tProjected Jabs: $(
+                                @sprintf("%.2f", projected_jabs * N_pop)
+                        )
+                ")
+                print("\n---------------------------------\n")
 
                 S_new = ((1 - psi * mu) * S +
                          psi * (mu * hat_N_n + omega_v * V
