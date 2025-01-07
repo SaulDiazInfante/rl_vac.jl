@@ -1,10 +1,11 @@
+using Debugger
 using rl_vac
 using Test
 using DataFrames, CSV, JSON
 using CairoMakie
 CairoMakie.activate!()
 #
-sampling_size = 1000;
+sampling_size = 10000
 df_par, df_mc, path_par, path_mc = montecarlo_sampling(
     sampling_size,
     "data/parameters_model.json"
