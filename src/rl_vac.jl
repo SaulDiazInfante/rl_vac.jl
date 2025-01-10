@@ -9,6 +9,7 @@ using JSON, DataFrames, Distributions
 using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
+using Debugger
 #
 export load_parameters
 export get_stencil_projection

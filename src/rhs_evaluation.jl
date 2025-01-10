@@ -126,7 +126,7 @@ function rhs_evaluation!(t, x, opt_policy, a_t, k, parameters)
                 a_t = psi_v
                 scaled_psi_v = psi_v * N_pop
                 msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.2f", psi_v))"
-                msg_02 = "\n\t normalized Psi_V: $(
+                msg_02 = "\n\t norminal Psi_V: $(
                                 @sprintf("%.2f", scaled_psi_v
                         )
                 )"
