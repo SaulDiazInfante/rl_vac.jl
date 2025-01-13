@@ -27,7 +27,8 @@ function save_interval_solution(x;
                         "I_S", "I_A", "R",
                         "D", "V", "CL",
                         "X_vac", "X_0_mayer", "K_stock",
-                        "action", "opt_policy"
+        "action", "opt_policy",
+        "t_index_interval"
                     ],
                 file_name = "solution_interval.csv"
 )
