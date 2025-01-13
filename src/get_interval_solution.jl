@@ -21,7 +21,7 @@ function get_interval_solution!(
     t_0 = time_interval[1]
     index = get_stencil_projection(t_0, parameters)
     N_grid_size = parameters.N_grid_size[index]
-    sol = zeros(Float64, N_grid_size, 14)
+    sol = zeros(Float64, N_grid_size, 15)
 
     S_0 = x.S[1]
     E_0 = x.E[1]
@@ -40,7 +40,7 @@ function get_interval_solution!(
         I_A_0, R_0, D_0,
         V_0, CL0, X_vac_0,
         X_0_mayer_0, k_0,
-        a_t, opt_policy
+        a_t, opt_policy, index
     ]
 
     sol[1, :] = x_00
@@ -50,7 +50,7 @@ function get_interval_solution!(
         "I_A", "R", "D",
         "V", "CL", "X_vac",
         "X_0_mayer", "K_stock", "action",
-        "opt_policy"
+        "opt_policy", "t_index_interval"
     ]
     for j = 2:N_grid_size
         #x_new = rhs_evaluation(x_old, parameters)

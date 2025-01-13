@@ -28,7 +28,8 @@ function get_solution_path!(parameters::DataFrame)
         "I_S", "I_A", "R",
         "D", "V", "CL",
         "X_vac", "X_0_mayer","K_stock",
-        "action", "opt_policy"
+        "action", "opt_policy",
+        "t_interval_idx"
     ]
     
     x_0_vector = [
@@ -36,7 +37,7 @@ function get_solution_path!(parameters::DataFrame)
         I_S_0, I_A_0, R_0, 
         D_0, V_0, CL0,
         X_vac_0, X_0_mayer, k_0, 
-        0.0, 1.0
+        0.0, 1.0, 1
     ]
     hat_N_n_0 = sum(x_0_vector[2:8]) - D_0
     x_0 = DataFrame(

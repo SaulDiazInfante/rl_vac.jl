@@ -71,4 +71,6 @@ function compute_cost(x, parameters)
     stock_cost = m_stock_cost * (x.K_stock - x_0.K_stock)
     campaing_cost = m_campaing_cost * (x.X_vac - x_0.X_vac)
     return sum([yll, yld, stock_cost, campaing_cost])[1]
+
+
 end

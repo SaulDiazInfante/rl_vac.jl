@@ -16,7 +16,7 @@ the corresponding article for formulation.
 """
 function rhs_evaluation!(t, x, opt_policy, a_t, k, parameters)
         #TODO: Check dimesions with other scripts
-        x_new = zeros(14)
+        x_new = zeros(15)
         x_new[1] = t
         S = x.S[1]
         E = x.E[1]
@@ -213,5 +213,6 @@ function rhs_evaluation!(t, x, opt_policy, a_t, k, parameters)
         x_new[12] = K_new
         x_new[13] = a_t
         x_new[14] = opt_policy
+        x_new[15] = index
         return x_new
 end
