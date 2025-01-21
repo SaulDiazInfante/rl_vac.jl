@@ -1,6 +1,6 @@
 """
 Module for simulation of a Vaccine stock Management with 
-Markov Decission Processes. See
+Markov Decision Processes. See
 (https://www.overleaf.com/read/hqmrsgtnfvkh)[https://www.overleaf.com/read/hqmrsgtnfvkh]
 to details.
 """
@@ -11,8 +11,6 @@ using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
 using Debugger
 #
-export load_parameters
-export get_stencil_projection
 export load_parameters
 export get_stencil_projection
 export rhs_evaluation!

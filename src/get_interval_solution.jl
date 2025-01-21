@@ -16,8 +16,13 @@ Generate the values of all compartments for points of a given interval time
 ...
 """
 function get_interval_solution!(
-    time_interval, x, opt_policy, a_t, k, parameters
-)
+    time_interval::Float64,
+    x::DataFrame,
+    opt_policy::Float64,
+    a_t::Float64,
+    k::Float64,
+    parameters::DataFrame
+)::Matrix{Float64}
     t_0 = time_interval[1]
     index = get_stencil_projection(t_0, parameters)
     N_grid_size = parameters.N_grid_size[index]
@@ -44,7 +49,7 @@ function get_interval_solution!(
     ]
 
     sol[1, :] = x_00
-    header_strs = [
+    header_str = [
         "t",
         "S", "E", "I_S",
         "I_A", "R", "D",
@@ -58,7 +63,7 @@ function get_interval_solution!(
         S_old_df = DataFrame(
             Dict(
                 zip(
-                    header_strs,
+                    header_str,
                     S_old
                 )
             )

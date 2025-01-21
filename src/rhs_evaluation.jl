@@ -6,16 +6,23 @@ the right-hand side evaluation of The Non-Standard recurrence; refer to
 the corresponding article for formulation.
 
 # Arguments
-- `t::Float`: time 
+- `t::Float64`: time 
 - `x::DataFrame`: System current state
-- `a_t::Float`: action, that is a proportion of the total jabs projected
+- `a_t::Float64`: action, that is a proportion of the total jabs projected
   that would be administrated.
-- `k::Float`: current level of the vaccine-stock.
+- `k::Float64`: current level of the vaccine-stock.
 - `parameters::DataFrame`: current parameters.
 ...
 """
-function rhs_evaluation!(t, x, opt_policy, a_t, k, parameters)
-        #TODO: Check dimesions with other scripts
+function rhs_evaluation!(
+        t::Float64,
+        x::DataFrame,
+        opt_policy,
+        a_t::Float64,
+        k::Float64,
+        parameters::DataFrame
+)::DataFrame
+
         x_new = zeros(15)
         x_new[1] = t
         S = x.S[1]
@@ -108,14 +115,14 @@ function rhs_evaluation!(t, x, opt_policy, a_t, k, parameters)
         )
         delta_X_vac = (opt_policy * a_t) * (S + E + I_A + R) * psi
         X_vac_new = X_vac + delta_X_vac
-        sign_efective_stock =
+        sign_effective_stock =
                 sign(
                         k - (X_vac_new - X_vac_interval) - stock_condition
                 )
-        sign_efective_stock_test = (sign_efective_stock < 0.0)
+        sign_effective_stock_test = (sign_effective_stock < 0.0)
 
         # TODO: Fix Stock    
-        if sign_efective_stock_test
+        if sign_effective_stock_test
                 X_C = k - parameters.low_stock[1] / parameters.N[1]
                 T_index = get_stencil_projection(x.t[1], parameters)
                 t_lower_interval = x.t[1]
@@ -126,7 +133,7 @@ function rhs_evaluation!(t, x, opt_policy, a_t, k, parameters)
                 a_t = psi_v
                 scaled_psi_v = psi_v * N_pop
                 msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.2f", psi_v))"
-                msg_02 = "\n\t norminal Psi_V: $(
+                msg_02 = "\n\t nominal Psi_V: $(
                                 @sprintf("%.2f", scaled_psi_v
                         )
                 )"

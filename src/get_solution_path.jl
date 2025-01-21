@@ -23,7 +23,7 @@ function get_solution_path!(parameters::DataFrame)
     operational_levels = parameters.operational_stock_levels
     # #    "psi_v": 0.00123969,
     CL0 = sum([S_0, E_0, I_S_0, I_A_0, R_0, D_0, V_0])
-    header_strs = [
+    header_str = [
         "time", "S", "E",
         "I_S", "I_A", "R",
         "D", "V", "CL",
@@ -43,7 +43,7 @@ function get_solution_path!(parameters::DataFrame)
     x_0 = DataFrame(
         Dict(
             zip(
-                header_strs,
+                header_str,
                 x_0_vector
             )
         )
