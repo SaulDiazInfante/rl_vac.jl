@@ -5,6 +5,7 @@ using Documenter
 push!(LOAD_PATH, "../src/")
 cd(@__DIR__)
 using Documenter, Literate, DocumenterCitations
+using DataFrames
 using rl_vac
 
 # Literate.markdown("./src/tutorial.jl", "./src")
@@ -13,15 +14,16 @@ pages = [
     #  "Tutorial" => "tutorial.md",
     #"API" => "api.md",
 ]
-
+bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"))
 makedocs(
     modules=[rl_vac],
     doctest=false,
     clean=true,
-    warnonly=[:missing_docs],
-    sitename="rl_vac.jl",
-    format=Documenter.HTML(prettyurls=false),
-    pages=pages
+    warnonly=true,
+    #sitename="rl_vac.jl",
+    #format=Documenter.HTML(prettyurls=false),
+    pages=pages,
+    plugins=[bib]
 )
 
 # Documenter can also automatically deploy documentation to gh-pages.

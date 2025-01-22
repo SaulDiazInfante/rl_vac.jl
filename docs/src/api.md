@@ -18,8 +18,10 @@ get_simulation_statistics
 get_panel_plot
 get_confidence_bands
 get_epidemic_states_confidence_bands
-```
-
-```@docs
-get_deterministic_plot_path
+get_deterministic_plot_path(
+    df_mc::DataFrame,
+    pop_size::Float64,
+    file_name_f1::AbstractString,
+    file_name_f2::AbstractString
+)
 ```

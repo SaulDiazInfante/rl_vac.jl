@@ -4,10 +4,6 @@
 rl_vac
 ```
 
-```@setup MAIN
-using rl_vac
-```
-
 ## Latest news
 
 - Global continuation can now be performed across any arbitrary curve
@@ -16,6 +12,7 @@ using rl_vac
 
 ## Getting started
 
-
-
 Documentation for rl_vac.jl
+
+```@bibliography
+```
