@@ -5,6 +5,11 @@ Markov Decision Processes. See
 to details.
 """
 module rl_vac
+@doc let
+    path = joinpath(dirname(@__DIR__), "README.md")
+    include_dependency(path)
+    read(path, String)
+
 using JSON, DataFrames, Distributions
 using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations

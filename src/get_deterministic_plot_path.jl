@@ -1,4 +1,10 @@
 """
+    get_deterministic_plot_path(
+        df_mc::DataFrame,
+        pop_size::Float64,
+        file_name_f1::AbstractString,
+        file_name_f2::AbstractString
+    )
 Returns two figure that encloses a the visualization of
 the reference deterministic path with the evolution of the
 dynamic model and the regarding policy. 
