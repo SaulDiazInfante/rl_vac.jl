@@ -1,7 +1,9 @@
 # API
 
 ```@docs
+
 load_parameters
+get_stencil_projection
 rhs_evaluation!
 get_stochastic_perturbation
 compute_cost
@@ -16,5 +18,8 @@ get_simulation_statistics
 get_panel_plot
 get_confidence_bands
 get_epidemic_states_confidence_bands
+```
+
+```@docs
 get_deterministic_plot_path
 ```

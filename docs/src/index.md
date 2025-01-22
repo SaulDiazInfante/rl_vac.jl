@@ -16,8 +16,6 @@ using rl_vac
 
 ## Getting started
 
-Start by having a look at the [tutorial](@ref tutorial), after which you can
-consult individual library functions in [API](@ref). Many more examples can be found
-in the dedicated examples page.
+
 
 Documentation for rl_vac.jl
