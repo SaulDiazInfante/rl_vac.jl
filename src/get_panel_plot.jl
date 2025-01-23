@@ -1,14 +1,18 @@
 """
+    get_panel_plot(df_mc::DataFrame, pop_size::Float64, n_paths::Int, file_name::AbstractString
+    )
+
 Returns a figure that encloses a panel visualization with 
 vaccine stock,
 vaccination rate, and optimal decision at the left, 
-and the Infecte class evulution on the right for a number of 
+and the Infect class evolution on the right for a number of 
 n_paths realizations.
 
 # Arguments
 - `df_mc::DataFrame`: DataFrame with the MonteCarlo Sampling
-- `pop_size::Float64`: Population size to scalate Incidence and Number of doses
+- `pop_size::Float64`: Population size to scale Incidence and Number of doses
 - `n_paths::Int`: Number of sampling paths to plot
+...
 """
 
 function get_panel_plot(

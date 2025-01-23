@@ -5,6 +5,7 @@ Compute the functional cost given the current
 state and action.
 
 # Arguments
+
 - `t::Float`: time 
 - `x::DataFrame`: System current state
 - `a_t::Float`: action, that is a proportion of the total jabs projected
@@ -17,7 +18,7 @@ function compute_cost(x, parameters)
     m_yll = parameters.yll_weight[1]
     m_yld = parameters.yld_weight[1]
     m_stock_cost = parameters.stock_cost_weight[1]
-    m_campaing_cost = parameters.campaing_cost_weight[1]
+    m_campaign_cost = parameters.campaign_cost_weight[1]
 
     N_grid_size = parameters.N_grid_size[1];
     #unpack initial condition
@@ -45,7 +46,7 @@ function compute_cost(x, parameters)
     epsilon = parameters.epsilon[1]
     beta_s = parameters.beta_s[1]
     beta_a = parameters.beta_a[1]
-    header_strs = [
+    header_str = [
         "t", "S", "E",
         "I_S", "I_A", "R",
         "D", "V", "CL",
@@ -60,7 +61,7 @@ function compute_cost(x, parameters)
     x_0 = DataFrame(
         Dict(
             zip(
-                header_strs,
+                header_str,
                 x_0
             )
         )
@@ -69,8 +70,8 @@ function compute_cost(x, parameters)
     yll = m_yll * p * delta_e * (x.E - x_0.E)
     yld = m_yld * theta * alpha_s * (x.E - x_0.E)
     stock_cost = m_stock_cost * (x.K_stock - x_0.K_stock)
-    campaing_cost = m_campaing_cost * (x.X_vac - x_0.X_vac)
-    return sum([yll, yld, stock_cost, campaing_cost])[1]
+    campaign_cost = m_campaign_cost * (x.X_vac - x_0.X_vac)
+    return sum([yll, yld, stock_cost, campaign_cost])[1]
 
 
 end

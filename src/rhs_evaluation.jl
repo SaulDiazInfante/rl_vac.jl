@@ -1,5 +1,12 @@
 """
-    rhs_evaluation!(t, x, opt_policy, a_t, k, parameters)
+        rhs_evaluation!(
+                t::Float64,
+                x::DataFrame,
+                opt_policy::Float64,
+                a_t::Float64,
+                k::Float64,
+                parameters::DataFrame
+        )::DataFrame
 
 Approximate the solution to SEIRVDX_vac ODE by returning an array with
 the right-hand side evaluation of The Non-Standard recurrence; refer to

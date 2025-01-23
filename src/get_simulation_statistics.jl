@@ -3,11 +3,11 @@
         data_path="./data/df_mc.csv",
         parameters_path = "par.json"
     )
-    returns the median, and qunatiles [0.25, 0.95] for each time of
+    returns the median, and quintiles [0.25, 0.95] for each time of
     simulation.
     
 # Arguments
-- `data_paht::String`: Path with the output of montecarlo sampling
+- `data_path::String`: Path with the output of montecarlo sampling
 - `parameters_path::String`: Path with the json source for config parameters
 ...
 """
@@ -17,7 +17,7 @@ function get_simulation_statistics(
 )
     trajectories = CSV.read(data_path, DataFrame);
     dropmissing!(trajectories)
-    # obtain dimmensions
+    # obtain dimensions
     parameters = load_parameters()
     idx_0 = (trajectories.idx_path .== 1);
     query = trajectories[idx_0, :];
@@ -41,12 +41,12 @@ function get_simulation_statistics(
         df_interpolated = [df_interpolated; interpolated_trajectory_j]
         next!(p)
     end
-    # saving interpolated time seires
+    # saving interpolated time series
     prefix_file_name = "df_interpolated"
     d = Dates.now()
     tag = "(" * Dates.format(d, "yyyy-mm-dd_HH:MM)")
-    sufix_file_name = ".csv"
-    csv_file_name = prefix_file_name * tag * sufix_file_name
+    suffix_file_name = ".csv"
+    csv_file_name = prefix_file_name * tag * suffix_file_name
     path_par = "./data/" * csv_file_name
     CSV.write(path_par, df_interpolated)
     # Gettin statistics over the firs observation
@@ -133,12 +133,12 @@ function get_simulation_statistics(
     prefix_file_names = ["df_median", "df_lower_q", "df_upper_q"]
     data = [df_median_path, df_lower_q_path, df_upper_q_path]
     d = Dates.now()
-    sufix = ".csv"
+    suffix = ".csv"
     tag = "(" * Dates.format(d, "yyyy-mm-dd_HH:MM)")
     for i = 1:3
         prefix = prefix_file_names[i]
-        csv_file_name_ = "./data/" * prefix * sufix_file_name
-        csv_file_name = "./data/" * prefix * tag * sufix_file_name
+        csv_file_name_ = "./data/" * prefix * suffix_file_name
+        csv_file_name = "./data/" * prefix * tag * suffix_file_name
         CSV.write(csv_file_name_, data[i])
         CSV.write(csv_file_name, data[i])
     end

@@ -12,7 +12,7 @@ using rl_vac
 pages = [
     "Introduction" => "index.md",
     #  "Tutorial" => "tutorial.md",
-    #"API" => "api.md",
+    "API" => "api.md",
 ]
 bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"))
 makedocs(
@@ -20,8 +20,8 @@ makedocs(
     doctest=false,
     clean=true,
     warnonly=true,
-    #sitename="rl_vac.jl",
-    #format=Documenter.HTML(prettyurls=false),
+    sitename="rl_vac.jl",
+    format=Documenter.HTML(prettyurls=false),
     pages=pages,
     plugins=[bib]
 )

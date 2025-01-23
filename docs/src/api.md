@@ -25,3 +25,29 @@ get_deterministic_plot_path(
     file_name_f2::AbstractString
 )
 ```
+
+## With autodocs
+
+```@autodocs
+Modules = [rl_vac]
+Order = [:function, :type]
+pages = [
+    "load_parameters.jl",
+    "get_stencil_projection.jl",
+    "rhs_evaluation.jl",
+    "get_stochastic_perturbation.jl",
+    "compute_cost.jl",
+    "get_vaccine_stock_coverage.jl",
+    "get_vaccine_action.jl",
+    "get_interval_solution.jl",
+    "get_solution_path.jl",
+    "save_interval_solution.jl",
+    "montecarlo_sampling.jl",
+    "get_interpolated_solution.jl",
+    "get_simulation_statistics.jl",
+    "get_panel_plot.jl",
+    "get_confidence_bands.jl",
+    "get_epidemic_states_confidence_bands.jl",
+    "get_deterministic_plot_path.jl"
+]
+```

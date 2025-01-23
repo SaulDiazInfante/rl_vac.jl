@@ -4,7 +4,10 @@
 rl_vac
 ```
 
-## Latest news
+## Julia source code
+
+This repostory encloses the sourcode regardign to publication
+[DiazInfante2025](@cite).
 
 - Global continuation can now be performed across any arbitrary curve
   in parameter space.
