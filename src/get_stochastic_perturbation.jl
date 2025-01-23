@@ -1,18 +1,16 @@
 """
-    get_stochastic_perturbation(
-        json_file_name="../data/parameters_model.json"
-    )::DataFrame
+    get_stochastic_perturbation(json_file_name="../data/parameters_model.json")::DataFrame
 
-Returns a random perturbation of the delivery plan enclosed in the json
-file. To do this, the function loads the parameters as the DataFrame
-`par` and then sum to the deliveries times and stock shipments a random
+Returns a random perturbation of the delivery plan enclosed
+in the json file. To do this, the function loads the
+parameters as the DataFrame `par` and then sum to the 
+deliveries times and stock shipments a random
 variable.
 
+### Keyword arguments
 
-## Keyword arguments
-
-- `json_file_name::String` = "../data/parameters_model.json". Path with
-    the `.json` file with setup parameters.
+- `json_file_name::String` = "../data/parameters_model.json".
+Path with the `.json` file with setup parameters.
 
 """
 

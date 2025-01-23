@@ -9,14 +9,18 @@
 Returns two figures that encloses a the visualization of
 the reference deterministic path with the evolution of the
 dynamic model and the regarding policy. 
+---
 
-# Arguments
+### Input
 
 - `df_mc::DataFrame`: DataFrame with the opt_Policy col from MonteCarlo Sampling 
 - `pop_size::Float64`:
 - `file_name_f1::AbstractString`:
 - `file_name_f2::AbstractString`:
-...
+
+### Output
+Makie object and a file graph with extension .png
+
 """
 
 function get_deterministic_plot_path(

@@ -1,5 +1,5 @@
 """
-    compute_cost(x, parameters)
+    compute_cost(x::DataFrame, parameters::DataFrame)::Float64
 
 Compute the functional cost given the current 
 state and action.
@@ -14,7 +14,7 @@ state and action.
 - `parameters::DataFrame`: current parameters.
 ...
 """
-function compute_cost(x, parameters)
+function compute_cost(x::DataFrame, parameters::DataFrame)::Float64
     m_yll = parameters.yll_weight[1]
     m_yld = parameters.yld_weight[1]
     m_stock_cost = parameters.stock_cost_weight[1]

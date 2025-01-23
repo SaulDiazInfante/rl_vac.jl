@@ -8,7 +8,7 @@
                 parameters::DataFrame
         )::DataFrame
 
-Approximate the solution to SEIRVDX_vac ODE by returning an array with
+Approximate the solution to `SEIRVDX_vac`` ODE by returning an array with
 the right-hand side evaluation of The Non-Standard recurrence; refer to
 the corresponding article for formulation.
 
