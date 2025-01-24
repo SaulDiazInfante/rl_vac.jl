@@ -9,7 +9,7 @@ Returns the index of corresponding projection of time t to the stencil and in ac
     `load_parameters(...)` function 
 ---
 """
-function get_stencil_projection(t::Float64, parameters::DataFrame)::Float64
+function get_stencil_projection(t::Float64, parameters::DataFrame)::Int64
     stencil = parameters.t_delivery
     grid = findall(t .>= stencil)
     projection = maximum(grid)

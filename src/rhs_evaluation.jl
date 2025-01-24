@@ -6,7 +6,7 @@
                 a_t::Float64,
                 k::Float64,
                 parameters::DataFrame
-        )::DataFrame
+        )::Vector{Float64}
 
 Approximate the solution to `SEIRVDX_vac`` ODE by returning an array with
 the right-hand side evaluation of The Non-Standard recurrence; refer to
@@ -28,7 +28,7 @@ function rhs_evaluation!(
         a_t::Float64,
         k::Float64,
         parameters::DataFrame
-)::DataFrame
+)::Vector{Float64}
 
         x_new = zeros(15)
         x_new[1] = t

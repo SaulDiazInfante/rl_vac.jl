@@ -1,10 +1,9 @@
 using Pkg
 Pkg.activate("..")
 push!(LOAD_PATH, "../src/")
-using Documenter
+using Documenter, Literate, DocumenterCitations
 push!(LOAD_PATH, "../src/")
 cd(@__DIR__)
-using Documenter, Literate, DocumenterCitations
 using DataFrames
 using rl_vac
 

@@ -1,12 +1,12 @@
 """
     get_interval_solution!(
         time_interval, x, opt_policy, a_t, k, parameters
-    )
+    )::Matrix{Float64}
 
 Generate the values of all compartments for points of a given interval time 
 
 # Arguments
-- `time_interval::Float`: time.
+- `time_interval::LinRange{Float64, Int64}`: Interval time.
 - `x::DataFrame`: System current state.
 - `opt_policy::Float`: Optimal level of vaccine inventory coverage. 
 - `a_t::Float`: Action, that is a proportion of the total jabs projected
@@ -16,7 +16,7 @@ Generate the values of all compartments for points of a given interval time
 ...
 """
 function get_interval_solution!(
-    time_interval::Float64,
+    time_interval::LinRange{Float64, Int64},
     x::DataFrame,
     opt_policy::Float64,
     a_t::Float64,

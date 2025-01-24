@@ -100,8 +100,8 @@ function get_solution_path!(parameters::DataFrame)
     end
     opt_solution_1 = candidate_solution
     prefix = "df_solution_"
-    sufix = "1.csv"
-    file = "./data/" * prefix * sufix
+    suffix = "1.csv"
+    file = "./data/" * prefix * suffix
     df_solution_1 =
     save_interval_solution(
         opt_solution_1;
@@ -134,6 +134,14 @@ function get_solution_path!(parameters::DataFrame)
         a_t = get_vaccine_action!(X_Ct, t_delivery_t, parameters)
         ## Optimal Decision
         opt_policy = operational_levels[end]
+        x_t = DataFrame(
+            Dict(
+                zip(
+                    header_str,
+                    x_t
+                )
+            )
+        )
         solution_t = get_interval_solution!(
             t_interval,
             x_t,
@@ -142,7 +150,7 @@ function get_solution_path!(parameters::DataFrame)
             k_t,
             parameters
         )
-        ### optimization by exaustive search
+        ### optimization by exhaustive search
         candidate_solution = solution_t
         opt_cost = candidate_solution[end, 11]
         for rho_k in operational_levels[1:(end-1)]
@@ -163,8 +171,8 @@ function get_solution_path!(parameters::DataFrame)
             end
         end
         opt_solution_t = candidate_solution
-        sufix = "$(t)"*".csv"
-        file = "./data/" * prefix * sufix
+        suffix = "$(t)"*".csv"
+        file = "./data/" * prefix * suffix
         df_solution_t = 
             save_interval_solution(
                 opt_solution_t; 
