@@ -47,13 +47,13 @@ function montecarlo_sampling(
     #
     d = Dates.now()
     tag = "(" * Dates.format(d, "yyyy-mm-dd_HH:MM)")
-    sufix_file_name = ".csv"
-    csv_file_name = prefix_file_name * tag * sufix_file_name
+    suffix_file_name = ".csv"
+    csv_file_name = prefix_file_name * tag * suffix_file_name
     path_par = "./data/" * csv_file_name
     CSV.write(path_par, df_par)
     # 
     prefix_file_name = "df_mc"
-    csv_file_name = prefix_file_name * sufix_file_name
+    csv_file_name = prefix_file_name * suffix_file_name
     path_mc = "./data/" * csv_file_name
     CSV.write(path_mc, df_mc)
     return df_par, df_mc, path_par, path_mc

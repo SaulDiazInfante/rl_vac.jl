@@ -23,6 +23,10 @@
     "X_vac_interval": 0.0,
     "X_0_mayer": 0.0,
     "N_grid_size": 500,
+    "kappa": 0.1,
+    "sigma_T": 1.25,
+    "mu_T": -70.0,
+    "theta_T": 0.3,
     "t_delivery": [
         0.0,
         80.0,

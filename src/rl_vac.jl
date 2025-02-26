@@ -15,7 +15,7 @@ using JSON, DataFrames, Distributions
 using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
-using Debugger
+using Debugger, Random
 #
 export load_parameters
 export get_stencil_projection
@@ -34,6 +34,7 @@ export get_panel_plot
 export get_confidence_bands
 export get_epidemic_states_confidence_bands
 export get_deterministic_plot_path
+export compute_mr_ou_temp_loss
 #
 include("load_parameters.jl")
 include("get_stencil_projection.jl")
@@ -52,4 +53,5 @@ include("get_panel_plot.jl")
 include("get_confidence_bands.jl")
 include("get_epidemic_states_confidence_bands.jl")
 include("get_deterministic_plot_path.jl")
+include("compute_mr_ou_temp_loss.jl")
 end

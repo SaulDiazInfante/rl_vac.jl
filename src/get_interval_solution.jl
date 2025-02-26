@@ -11,7 +11,6 @@ Generate the values of all compartments for points of a given interval time
 - `opt_policy::Float`: Optimal level of vaccine inventory coverage. 
 - `a_t::Float`: Action, that is a proportion of the total jabs projected
   that would be administrated.
-- `k::Float`: Current level of the vaccine-stock.
 - `parameters::DataFrame`: Current parameters.
 ...
 """
@@ -20,7 +19,6 @@ function get_interval_solution!(
     x::DataFrame,
     opt_policy::Float64,
     a_t::Float64,
-    k::Float64,
     parameters::DataFrame
 )::Matrix{Float64}
     t_0 = time_interval[1]
@@ -39,13 +37,15 @@ function get_interval_solution!(
     X_vac_0 = x.X_vac[1]
     k_0 = x.K_stock[1]
     CL0 = x.CL[1]
+    T_0_k = -70.0
     x_00 = [
         t_0,
         S_0, E_0, I_S_0,
         I_A_0, R_0, D_0,
         V_0, CL0, X_vac_0,
         X_0_mayer_0, k_0,
-        a_t, opt_policy, index
+        T_0_k, a_t, opt_policy,
+        index
     ]
 
     sol[1, :] = x_00
@@ -54,8 +54,9 @@ function get_interval_solution!(
         "S", "E", "I_S",
         "I_A", "R", "D",
         "V", "CL", "X_vac",
-        "X_0_mayer", "K_stock", "action",
-        "opt_policy", "t_index_interval"
+        "X_0_mayer", "K_stock",
+        "T", "action", "opt_policy",
+        "t_index_interval"
     ]
     for j = 2:N_grid_size
         #x_new = rhs_evaluation(x_old, parameters)
@@ -72,7 +73,7 @@ function get_interval_solution!(
         #        if t >= 180
         #            print("DEV: interruption")
         #        end
-        sol[j, :] = rhs_evaluation!(t, S_old_df, opt_policy, a_t, k, parameters)
+        sol[j, :] = rhs_evaluation!(t, S_old_df, opt_policy, a_t, parameters)
     end
     return sol
 end

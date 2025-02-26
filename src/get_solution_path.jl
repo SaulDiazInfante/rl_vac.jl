@@ -76,7 +76,6 @@ function get_solution_path!(parameters::DataFrame)
             x_0,
             opt_policy, 
             a_t,
-            k_0,
             parameters
         )
     candidate_solution = solution_1
