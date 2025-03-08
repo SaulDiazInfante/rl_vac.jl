@@ -6,7 +6,7 @@ CairoMakie.activate!()
 
 sampling_size = 10
 # df_par, df_mc, path_par, path_mc = montecarlo_sampling(
-Debugger.@run montecarlo_sampling(
+Debugger.@enter montecarlo_sampling(
     sampling_size,
     "data/parameters_model.json"
 )

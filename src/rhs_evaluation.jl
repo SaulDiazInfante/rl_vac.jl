@@ -1,10 +1,10 @@
-using Printf, Random, DataFrames, Plots, rl_vac
 """
         rhs_evaluation!(
                 t::Float64,
                 x::DataFrame,
                 opt_policy::Float64,
                 a_t::Float64,
+                k,
                 parameters::DataFrame
         )::Vector{Float64}
 
@@ -16,7 +16,8 @@ the corresponding article for formulation.
 - `t::Float64`: time 
 - `x::DataFrame`: System current state
 - `a_t::Float64`: action, that is a proportion of the total jabs projected
-  that would be administrated.
+  that would be administrated,
+- `k::Float64`: current vaccine stock, 
 - `parameters::DataFrame`: current parameters.
 ...
 """
@@ -25,6 +26,7 @@ function rhs_evaluation!(
         x::DataFrame,
         opt_policy,
         a_t::Float64,
+        k::Float64,
         parameters::DataFrame
 )::Vector{Float64}
 
@@ -68,7 +70,6 @@ function rhs_evaluation!(
         hat_N_n = S + E + I_S + I_A + R + V
 
         lambda_f = (beta_s * I_S + beta_a * I_A) * hat_N_n^(-1)
-
         S_new = ((1 - psi * mu) * S +
                 psi * (mu * hat_N_n + omega_v * V
                         + delta_r * R)
@@ -123,21 +124,22 @@ function rhs_evaluation!(
         X_vac_new = X_vac + delta_X_vac
         sign_effective_stock =
                 sign(
-                        K - (X_vac_new - X_vac_interval) - stock_condition
+                        k - (X_vac_new - X_vac_interval) - stock_condition
                 )
         sign_effective_stock_test = (sign_effective_stock < 0.0)
 
         if sign_effective_stock_test
-                X_C = K - parameters.low_stock[1] / parameters.N[1]
+                @bp
+                X_C = k - parameters.low_stock[1] / parameters.N[1]
                 T_index = get_stencil_projection(x.t[1], parameters)
                 t_lower_interval = x.t[1]
                 t_upper_interval = parameters.t_delivery[T_index+1]
-                projected_jabs = X_vac_new - X_vac_interval
                 psi_v = -log(1.0 - X_C) / (t_upper_interval - t_lower_interval)
+                a_t = max(0.0, psi_v)
                 parameters.psi_v[index] = psi_v
-                a_t = psi_v
+                projected_jabs = X_vac_new
                 scaled_psi_v = psi_v * N_pop
-                msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.2f", psi_v))"
+                msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.8f", psi_v))"
                 msg_02 = "\n\t nominal Psi_V: $(
                                 @sprintf("%.2f", scaled_psi_v
                         )
@@ -148,9 +150,9 @@ function rhs_evaluation!(
                 print("\nRecalibrating Psi_V: ")
                 print(msg_01)
                 print(msg_02)
-                print("\nActual stock: ", K * N_pop)
+                print("\nActual stock: ", k * N_pop)
                 print("\n\tProjected Jabs: $(
-                                @sprintf("%.2f", projected_jabs * N_pop)
+                                @sprintf("%4.2f", projected_jabs * N_pop)
                         )
                 ")
                 print("\n---------------------------------\n")
@@ -234,9 +236,11 @@ function rhs_evaluation!(
         temp_lambda_loss = compute_mr_ou_temp_loss(; p_dict...)
         loss_vac = temp_lambda_loss[:loss_j]
         ou_temp = temp_lambda_loss[:temp_j]
-        delta_vac = X_vac_new - X_vac_interval
-
-        K_new = maximum([0.0, -(delta_vac + loss_vac) + K])
+        # Stock actualization:
+        # current stock equals delivery plus stock of previous interval
+        current_stock = k + X_vac_interval
+        stock_demand = X_vac_new
+        K_new = maximum([0.0, -(stock_demand + loss_vac) + current_stock])
         X_0_mayer_new = X_0_mayer + psi * compute_cost(x, parameters)
         x_new[9] = CL_new
         x_new[10] = X_vac_new

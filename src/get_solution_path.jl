@@ -7,8 +7,7 @@
 ...
 """
 function get_solution_path!(parameters::DataFrame)
-    N_grid_size = parameters.N_grid_size[1];
-    solution = zeros(Float64, N_grid_size, 13);
+    N_grid_size = parameters.N_grid_size[1]
     #unpack initial condition
     S_0 = parameters.S_0[1]
     E_0 = parameters.E_0[1]
@@ -28,8 +27,8 @@ function get_solution_path!(parameters::DataFrame)
         "I_S", "I_A", "R",
         "D", "V", "CL",
         "X_vac", "X_0_mayer","K_stock",
-        "action", "opt_policy",
-        "t_interval_idx"
+        "T", "loss", "action",
+        "opt_policy", "t_interval_idx"
     ]
     
     x_0_vector = [
@@ -37,9 +36,9 @@ function get_solution_path!(parameters::DataFrame)
         I_S_0, I_A_0, R_0, 
         D_0, V_0, CL0,
         X_vac_0, X_0_mayer, k_0, 
-        0.0, 1.0, 1
+        -70.0, 0.0, 0.0,
+        1.0, 1
     ]
-    hat_N_n_0 = sum(x_0_vector[2:8]) - D_0
     x_0 = DataFrame(
         Dict(
             zip(
@@ -55,18 +54,11 @@ function get_solution_path!(parameters::DataFrame)
     t_delivery_1 = parameters.t_delivery[2]
     # We must optimize our decision-making process by conducting a
     # thorough search. This entails exploring all possible options to
-    # determine the best #course of action.
+    # determine the best course of action.
     # We begin by considering the number of calculated jabs needed to
     # achieve the desired vaccine coverage. 
     
     a_t = get_vaccine_action!(X_C, t_delivery_1, parameters)
-    simulation_interval =
-        LinRange(
-            parameters.t_delivery[1],
-            parameters.t_delivery[2],
-            N_grid_size
-        )
-#
     time_horizon_1 = parameters.t_delivery[2]
     t_interval_1 = LinRange(0, time_horizon_1, N_grid_size)
     opt_policy = operational_levels[end]
@@ -76,6 +68,7 @@ function get_solution_path!(parameters::DataFrame)
             x_0,
             opt_policy, 
             a_t,
+            k_0,
             parameters
         )
     candidate_solution = solution_1
@@ -86,7 +79,7 @@ function get_solution_path!(parameters::DataFrame)
             t_interval_1,
             x_0,
             policy,
-             a_t,
+            a_t,
             k_0,
             parameters
         )

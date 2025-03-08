@@ -16,7 +16,10 @@ function get_vaccine_action!(X_C, t, parameters)
     t_initial_interval = parameters.t_delivery[id-1]
     t_horizon = t - t_initial_interval
     psi_v = -log(1.0 - X_C) / (t_horizon)
-    a_t = psi_v
-       parameters.psi_v[id-1] = psi_v
+    a_t = max(0.0, psi_v)
+    parameters.psi_v[id-1] = psi_v
+    if isapprox(1e-20, a_t; atol=eps(Float64), rtol=0)
+        print("Warning: zero vaccination rate estimated")
+    end
     return a_t
 end
