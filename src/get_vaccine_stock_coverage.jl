@@ -1,7 +1,7 @@
 """
     get_vaccine_stock_coverage(k, parameters)
 
-Returns el percentage of popullation to vaccine when the inventory 
+Returns el percentage of population to vaccine when the inventory 
 level of interest is k and use the current parameters 
 
 # Arguments

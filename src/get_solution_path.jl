@@ -118,22 +118,15 @@ function get_solution_path!(parameters::DataFrame)
         )
         # initial condition for left bound interval
         x_t = solution_list[t - 1][end, :]
-        k_t = x_t.K_stock + parameters.k_stock[t] / parameters.N[t]
-        parameters.X_vac_interval[t] = x_t.X_vac
+        x_t = DataFrame(x_t)
+        k_t = x_t.K_stock[1] + parameters.k_stock[t] / parameters.N[t]
+        parameters.X_vac_interval[t] = x_t.X_vac[1]
         X_Ct = get_vaccine_stock_coverage(k_t, parameters)
         t_delivery_t = parameters.t_delivery[t + 1]
         # TODO: Code the implementation for a sequential decision
         a_t = get_vaccine_action!(X_Ct, t_delivery_t, parameters)
         ## Optimal Decision
         opt_policy = operational_levels[end]
-        x_t = DataFrame(
-            Dict(
-                zip(
-                    header_str,
-                    x_t
-                )
-            )
-        )
         solution_t = get_interval_solution!(
             t_interval,
             x_t,
