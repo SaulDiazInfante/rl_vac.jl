@@ -96,7 +96,10 @@ function rhs_evaluation!(
 
         D_new = psi * theta * alpha_s * I_S_new + D
 
-        V_new = ((1 - psi * ((1 - epsilon) * lambda_f + mu + omega_v)) * V
+        V_new = (
+                1 - psi * (
+                        (1 - epsilon) * lambda_f + mu + omega_v)
+                ) * V
                  +
                  psi * (opt_policy * a_t) * S_new)
         x_new[2:8] = [
