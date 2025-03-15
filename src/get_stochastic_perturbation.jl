@@ -23,7 +23,10 @@ function get_stochastic_perturbation(
     k_stock = par.k_stock
     aux_t = zeros(length(t_delivery))
     aux_k = zeros(length(t_delivery))
+    aux_k[1] = k_stock[1]
+    aux_t[1] = t_delivery[1]
     delta_t = 0.0
+
     #
     for t in eachindex(t_delivery[1:end-1])
         aux_t_ = t_delivery[t]
@@ -36,7 +39,7 @@ function get_stochastic_perturbation(
             0, 2 * aux_k_
         )
         xi_t = rand(eta_t, 1)[1]
-        aux_k[t] = xi_t
+        aux_k[t+1] = xi_t
         #
         delta_t = t_delivery[t+1] - t_delivery[t]
         tau = Normal(delta_t, 1.0 * sqrt(delta_t))

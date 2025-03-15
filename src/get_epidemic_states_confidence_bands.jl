@@ -27,7 +27,7 @@ function get_epidemic_states_confidence_bands(
     size_pt_f = 72.0 .* size_inches
 
     f = Figure(
-        resolution=size_pt_f,
+        size=size_pt_f,
         fontsize=12
     )
 
@@ -78,7 +78,7 @@ function get_epidemic_states_confidence_bands(
         )
     end
 
-    # Symptomatics
+    # Symptomatic
 
     lines!(
         axtop,
