@@ -35,6 +35,7 @@ export get_confidence_bands
 export get_epidemic_states_confidence_bands
 export get_deterministic_plot_path
 export compute_mr_ou_temp_loss
+export compute_nsfd_iteration!
 #
 include("load_parameters.jl")
 include("get_stencil_projection.jl")
@@ -54,4 +55,5 @@ include("get_confidence_bands.jl")
 include("get_epidemic_states_confidence_bands.jl")
 include("get_deterministic_plot_path.jl")
 include("compute_mr_ou_temp_loss.jl")
+include("compute_nsfd_iteration.jl")
 end

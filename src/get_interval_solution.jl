@@ -11,6 +11,7 @@ Generate the values of all compartments for points of a given interval time
 - `opt_policy::Float`: Optimal level of vaccine inventory coverage. 
 - `a_t::Float`: Action, that is a proportion of the total jabs projected
   that would be administrated.
+- `k::Float`: Normalized size order of the vaccine delivery .
 - `parameters::DataFrame`: Current parameters.
 ...
 """
@@ -51,7 +52,7 @@ function get_interval_solution!(
 
     sol[1, :] = x_00
     header_str = [
-        "t", "S", "E",
+        "time", "S", "E",
         "I_S", "I_A", "R",
         "D", "V", "CL",
         "X_vac", "X_0_mayer", "K_stock",

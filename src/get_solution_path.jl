@@ -18,9 +18,10 @@ function get_solution_path!(parameters::DataFrame)
     V_0 = parameters.V_0[1]
     X_vac_0 = 0.0
     X_0_mayer = parameters.X_0_mayer[1]
+    temperature_T = parameters.T[1]
+    # normalized stock size after first delivery
     k_0 = parameters.k_stock[1] / parameters.N[1]
     operational_levels = parameters.operational_stock_levels
-    # #    "psi_v": 0.00123969,
     CL0 = sum([S_0, E_0, I_S_0, I_A_0, R_0, D_0, V_0])
     header_str = [
         "time", "S", "E",
@@ -36,7 +37,7 @@ function get_solution_path!(parameters::DataFrame)
         I_S_0, I_A_0, R_0, 
         D_0, V_0, CL0,
         X_vac_0, X_0_mayer, k_0, 
-        -70.0, 0.0, 0.0,
+        temperature_T, 0.0, 0.0,
         1.0, 1
     ]
     x_0 = DataFrame(
@@ -117,11 +118,12 @@ function get_solution_path!(parameters::DataFrame)
                 N_grid_size
         )
         # initial condition for left bound interval
-        x_t = solution_list[t - 1][end, :]
-        x_t = DataFrame(x_t)
-        k_t = x_t.K_stock[1] + parameters.k_stock[t] / parameters.N[t]
-        parameters.X_vac_interval[t] = x_t.X_vac[1]
-        X_Ct = get_vaccine_stock_coverage(k_t, parameters)
+        x_t_0_k = solution_list[t-1][end, :]
+        x_t_0_k = DataFrame(x_t_0_k)
+        # updating the current stock with the kth-delivery
+        k_t_0_k = x_t_0_k.K_stock[1] + parameters.k_stock[t] / parameters.N[t]
+        parameters.X_vac_interval[t] = x_t_0_k.X_vac[1]
+        X_Ct = get_vaccine_stock_coverage(k_t_0_k, parameters)
         t_delivery_t = parameters.t_delivery[t + 1]
         # TODO: Code the implementation for a sequential decision
         a_t = get_vaccine_action!(X_Ct, t_delivery_t, parameters)
@@ -129,10 +131,10 @@ function get_solution_path!(parameters::DataFrame)
         opt_policy = operational_levels[end]
         solution_t = get_interval_solution!(
             t_interval,
-            x_t,
+            x_t_0_k,
             opt_policy,
             a_t,
-            k_t,
+            k_t_0_k,
             parameters
         )
         ### optimization by exhaustive search
@@ -142,10 +144,10 @@ function get_solution_path!(parameters::DataFrame)
             policy = rho_k
             solution_t = get_interval_solution!(
                 t_interval,
-                x_t,
+                x_t_0_k,
                 policy,
                 a_t,
-                k_t,
+                k_t_0_k,
                 parameters
             )
             cost = solution_t[end, 11]
