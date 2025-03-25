@@ -17,7 +17,7 @@ using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
 using Debugger, Random
 #
-export load_parameters
+export load_parameters_to_df
 export get_stencil_projection
 export rhs_evaluation!
 export get_stochastic_perturbation
@@ -37,7 +37,7 @@ export get_deterministic_plot_path
 export compute_mr_ou_temp_loss
 export compute_nsfd_iteration!
 #
-include("load_parameters.jl")
+include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
 include("rhs_evaluation.jl")
 include("get_stochastic_perturbation.jl")

@@ -6,7 +6,7 @@ Returns the index of corresponding projection of time t to the stencil and in ac
 # Arguments
 - `t::Float64`: time to project to the stencil
 - `parameters::DataFrame`: Data Frame loaded with 
-    `load_parameters(...)` function 
+    `load_parameters_to_df(...)` function 
 ---
 """
 function get_stencil_projection(t::Float64, parameters::DataFrame)::Int64

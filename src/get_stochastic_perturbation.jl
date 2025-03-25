@@ -18,7 +18,7 @@ function get_stochastic_perturbation(
     json_file_name="../data/parameters_model.json"
 )::DataFrame
 
-    par = load_parameters(json_file_name)
+    par = load_parameters_to_df(json_file_name)
     t_delivery = par.t_delivery
     k_stock = par.k_stock
     aux_t = zeros(length(t_delivery))

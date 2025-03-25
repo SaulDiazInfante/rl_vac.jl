@@ -15,7 +15,7 @@ function montecarlo_sampling(
     sampling_size=10000,
     json_file_name="data/parameters_model.json"
 )
-    parameters = load_parameters(json_file_name)
+    parameters = load_parameters_to_df(json_file_name)
     x0, df = get_solution_path!(parameters)
     #
     # 
