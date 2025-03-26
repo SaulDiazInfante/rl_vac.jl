@@ -59,7 +59,7 @@ function get_simulation_statistics(
         df_median_path = [df_median_path; df_median_path_]
         df_lower_q_path = [df_lower_q_path; df_lower_q_path_]
         df_upper_q_path = [df_upper_q_path; df_upper_q_path_]
-        next!(p; showvalues=[("time point ", j), ("from ", n)])
+        next!(p; showvalues=[("time point ", t), ("from ", n)])
     end
     prefix_file_names = ["df_median", "df_lower_q", "df_upper_q"]
     suffix_file_name = ".csv"

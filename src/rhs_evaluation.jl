@@ -62,7 +62,7 @@ function rhs_evaluation!(
 
         if sign_effective_stock_test
                 # Recalibrate the vaccine coverage and vaccination rate
-                print("(====) WARNING: reserve vaccine inventory overflow")
+                print("\n(====) WARNING: reserve vaccine inventory overflow")
                 print("\n(++++)Recalibrating the vaccination rate: ")
                 current_stock = x[!, "K_stock"][1]
                 vaccine_coverage = max(0.0, current_stock - reserve_inventory)
