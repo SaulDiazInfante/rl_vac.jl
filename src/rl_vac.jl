@@ -36,6 +36,8 @@ export get_epidemic_states_confidence_bands
 export get_deterministic_plot_path
 export compute_mr_ou_temp_loss
 export compute_nsfd_iteration!
+export tag_file
+export interpolate_mc_paths
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -56,4 +58,6 @@ include("get_epidemic_states_confidence_bands.jl")
 include("get_deterministic_plot_path.jl")
 include("compute_mr_ou_temp_loss.jl")
 include("compute_nsfd_iteration.jl")
+include("tag_file.jl")
+include("interpolate_mc_paths.jl")
 end

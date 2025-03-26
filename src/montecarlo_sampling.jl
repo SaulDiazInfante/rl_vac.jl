@@ -17,8 +17,6 @@ function montecarlo_sampling(
 )
     parameters = load_parameters_to_df(json_file_name)
     x0, df = get_solution_path!(parameters)
-    #
-    # 
     df_par = DataFrame()
     df_mc = DataFrame()
     #
@@ -30,6 +28,7 @@ function montecarlo_sampling(
     df_mc = [df_mc; df]
     df_par = [df_par; parameters]
     n = sampling_size
+
     p = Progress(n, 1, "Sampling")
     for idx in 2:sampling_size
         par = get_stochastic_perturbation(json_file_name)
@@ -42,11 +41,10 @@ function montecarlo_sampling(
         df_mc = [df_mc; df]
         next!(p)
     end
-    # saving par time seires
+
     prefix_file_name = "df_par"
-    #
-    d = Dates.now()
-    tag = "(" * Dates.format(d, "yyyy-mm-dd_HH:MM)")
+    date = Dates.now()
+    tag = "(" * Dates.format(date, "yyyy-mm-dd_HH:MM") * ")"
     suffix_file_name = ".csv"
     csv_file_name = prefix_file_name * tag * suffix_file_name
     path_par = "./data/" * csv_file_name
