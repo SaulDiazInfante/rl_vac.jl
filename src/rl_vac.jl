@@ -38,6 +38,8 @@ export compute_mr_ou_temp_loss
 export compute_nsfd_iteration!
 export tag_file
 export interpolate_mc_paths
+export optimize_interval_solution
+export get_initial_condition
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -60,4 +62,6 @@ include("compute_mr_ou_temp_loss.jl")
 include("compute_nsfd_iteration.jl")
 include("tag_file.jl")
 include("interpolate_mc_paths.jl")
+include("optimize_interval_solution.jl")
+include("get_initial_condition.jl")
 end

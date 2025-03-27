@@ -2,8 +2,8 @@
     get_vaccine_action!(X_c, t, parameters)
 
 Returns a vaccine action.
-This descision is calcualted in order to
-reach after a horizont time t_horizon a coverage X_C.
+This decision is calculated in order to
+reach after a horizon time t_horizon a coverage X_C.
     
 # Arguments
 - `X_c::Float`: Current coverage population at time t

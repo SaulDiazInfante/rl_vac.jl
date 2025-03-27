@@ -62,14 +62,15 @@ function rhs_evaluation!(
 
         if sign_effective_stock_test
                 # Recalibrate the vaccine coverage and vaccination rate
-                print("\n(====) WARNING: reserve vaccine inventory overflow")
-                print("\n(++++)Recalibrating the vaccination rate: ")
+                print("\n(===) WARNING: reserve vaccine inventory overflow")
+                print("\n(+++) Recalibrating the vaccination rate: ")
                 current_stock = x[!, "K_stock"][1]
                 vaccine_coverage = max(0.0, current_stock - reserve_inventory)
                 T_index = get_stencil_projection(x.time[1], parameters)
                 t_lower_interval = x.time[1]
                 t_upper_interval = parameters.t_delivery[T_index+1]
-                psi_v = -log(1.0 - vaccine_coverage) / (t_upper_interval - t_lower_interval)
+                length_interval = t_upper_interval - t_lower_interval
+                psi_v = -log(1.0 - vaccine_coverage) / length_interval
                 a_t = max(0.0, psi_v)
                 parameters.psi_v[index] = psi_v
                 projected_jabs = vaccine_coverage
@@ -77,12 +78,13 @@ function rhs_evaluation!(
                 scaled_psi_v = psi_v * N_pop
                 msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.8f", psi_v))"
                 msg_02 = "\n\t nominal Psi_V: $(
-                                @sprintf("%.2f", scaled_psi_v
+                                @sprintf("%.8f", scaled_psi_v
                         )
                 )"
-                print("\n=================================")
+                print("\n===========================================")
                 print("\nt_lower: ", x.time[1])
                 print("\nt_upper: ", t_upper_interval)
+                print("\n length_interval: ", length_interval)
                 print(msg_01)
                 print(msg_02)
                 print("\nActual stock: ", current_stock * N_pop)
@@ -90,7 +92,7 @@ function rhs_evaluation!(
                                 @sprintf("%4.2f", projected_jabs * N_pop)
                         )
                 ")
-                print("\n---------------------------------\n")
+                print("\n-------------------------------------------\n")
                 x_new = compute_nsfd_iteration!(
                         t,
                         x,
