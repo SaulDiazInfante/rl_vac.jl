@@ -7,7 +7,6 @@ function compute_nsfd_iteration!(
     parameters::DataFrame
 )::Vector{Float64}
 
-    # Unpack state variables
     x_new = zeros(17)
     x_new[1] = t
     S = x.S[1]
@@ -38,7 +37,6 @@ function compute_nsfd_iteration!(
     epsilon = parameters.epsilon[1]
     beta_s = parameters.beta_s[1]
     beta_a = parameters.beta_a[1]
-    N_pop = parameters.N[1]
     #
     N_grid_size = parameters.N_grid_size[1]
     horizon_T = parameters.t_delivery[index+1] - parameters.t_delivery[index]
