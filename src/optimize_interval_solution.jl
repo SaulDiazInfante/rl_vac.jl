@@ -1,5 +1,5 @@
 """
-    optimize_interval_solution(time_interval, x_0, a_t, k_0, parameters)
+    optimize_interval_solution(time_interval, x_0, action_tion_t, k_0, parameters)
 
 Optimize the solution for a given time interval by iterating over a set of operational stock levels 
 and selecting the policy that minimizes the cost.
@@ -7,7 +7,7 @@ and selecting the policy that minimizes the cost.
 # Arguments
 - `time_interval::Any`: The time interval over which the optimization is performed.
 - `x_0::Any`: The initial state of the system.
-- `a_t::Any`: The time-dependent parameter or control variable.
+- `action_tion_t::Any`: The time-dependent parameter or control variable.
 - `k_0::Any`: The initial stock level or related parameter.
 - `parameters::Any`: A struct or dictionary containing additional parameters, including 
   `operational_stock_levels`, which is a collection of operational fractions to iterate over.
@@ -29,22 +29,21 @@ returns it as the optimal solution.
 function optimize_interval_solution(
   time_interval,
   x_0,
-  a_t,
-  k_0,
   parameters
 )
   opt_cost = Inf
   operational_fractions = parameters.operational_stock_levels
   opt_solution = zeros(size(time_interval, 1), size(x_0, 2))
   for rho_k in operational_fractions
-    policy = rho_k
+    x_zero_k = x_0
+    x_zero_k[1, :opt_policy] = rho_k
+    par = Dict(
+      :time_interval => time_interval,
+      :x_zero_k => x_zero_k,
+      :parameters => parameters
+    )
     solution_t = get_interval_solution!(
-      time_interval,
-      x_0,
-      policy,
-      a_t,
-      k_0,
-      parameters
+      ; par...
     )
 
     cost = solution_t[end, 11]

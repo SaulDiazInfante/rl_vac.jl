@@ -25,7 +25,7 @@ header_str = [
     "t", "S", "E",
     "I_S", "I_A", "R",
     "D", "V", "CL",
-    "X_vac", "X_0_mayer", "K_stock",
+    "X_vac", "X_0_mayer", "K_stock_t",
     "T", "loss", "action",
     "opt_policy", "t_interval_idx"
 ]
@@ -49,13 +49,13 @@ x_0 = DataFrame(
 )
 t = 0.0
 opt_policy = parameters.operational_stock_levels[end]
-a_t = 0.25
+action_t = 0.25
 
 rhs_evaluation!(
     t,
     x_0,
     opt_policy,
-    a_t,
+    action_t,
     parameters
 )
 

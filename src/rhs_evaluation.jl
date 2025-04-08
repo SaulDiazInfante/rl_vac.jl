@@ -3,7 +3,7 @@
                 t::Float64,
                 x::DataFrame,
                 opt_policy::Float64,
-                a_t::Float64,
+                action_t::Float64,
                 k,
                 parameters::DataFrame
         )::Vector{Float64}
@@ -15,37 +15,26 @@ the corresponding article for formulation.
 # Arguments
 - `t::Float64`: time 
 - `x::DataFrame`: System current state
-- `a_t::Float64`: action, that is a proportion of the total jabs projected
+- `action_t::Float64`: action, that is a proportion of the total jabs projected
   that would be administrated,
 - `k::Float64`: current vaccine stock, 
 - `parameters::DataFrame`: current parameters.
 ...
 """
 function rhs_evaluation!(
-        t::Float64,
-        x::DataFrame,
-        opt_policy,
-        a_t::Float64,
-        k::Float64,
-        parameters::DataFrame
+        args...
 )::Vector{Float64}
 
         x_new = zeros(17)
-        reserve_inventory = parameters.low_stock[1] / parameters.N[1]
-        index = get_stencil_projection(x.time[1], parameters)
-        n_deliveries = size(parameters.t_delivery, 1)
+        index = get_stencil_projection(args.x.time[1], args.parameters)
+        n_deliveries = size(args.parameters.t_delivery, 1)
         if (index >= n_deliveries)
                 print("WARNING: simulation time OverflowErr")
         end
 
-        X_vac_interval = parameters.X_vac_interval[index]
+        X_vac_interval = args.x.X_vac_interval[index]
         x_new = compute_nsfd_iteration!(
-                t,
-                x,
-                opt_policy,
-                a_t,
-                k,
-                parameters
+                ; args...
         )
 
         CL_new = sum(x_new[2:8])
@@ -64,14 +53,14 @@ function rhs_evaluation!(
                 # Recalibrate the vaccine coverage and vaccination rate
                 print("\n(===) WARNING: reserve vaccine inventory overflow")
                 print("\n(+++) Recalibrating the vaccination rate: ")
-                current_stock = x[!, "K_stock"][1]
+                current_stock = x[!, "K_stock_t"][1]
                 vaccine_coverage = max(0.0, current_stock - reserve_inventory)
                 T_index = get_stencil_projection(x.time[1], parameters)
                 t_lower_interval = x.time[1]
                 t_upper_interval = parameters.t_delivery[T_index+1]
                 length_interval = t_upper_interval - t_lower_interval
                 psi_v = -log(1.0 - vaccine_coverage) / length_interval
-                a_t = max(0.0, psi_v)
+                action_t = max(0.0, psi_v)
                 parameters.psi_v[index] = psi_v
                 projected_jabs = vaccine_coverage
                 N_pop = parameters.N[1]
@@ -97,7 +86,7 @@ function rhs_evaluation!(
                         t,
                         x,
                         opt_policy,
-                        a_t,
+                        action_t,
                         k,
                         parameters
                 )

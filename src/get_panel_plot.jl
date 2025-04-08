@@ -61,13 +61,13 @@ function get_panel_plot(
         lines!(
             axtop,
             data_path_i[!, :time],
-            pop_size * data_path_i[!, :K_stock]
+            pop_size * data_path_i[!, :K_stock_t]
         )
         band!(
             axtop,
             data_path_i[!, :time],
             0.0,
-            pop_size * data_path_i[!, :K_stock],
+            pop_size * data_path_i[!, :K_stock_t],
             alpha=0.3
         )
         lines!(

@@ -87,7 +87,7 @@ function get_confidence_bands(
     ref_line = lines!(
         axtop,
         df_ref[!, :time],
-        pop_size * df_ref[!, :K_stock],
+        pop_size * df_ref[!, :K_stock_t],
         color=color_ref
     )
     i = 1
@@ -97,35 +97,35 @@ function get_confidence_bands(
     lines!(
         axtop,
         df_lower_q[!, :time],
-        pop_size * df_lower_q[!, :K_stock],
+        pop_size * df_lower_q[!, :K_stock_t],
         color=color_ref
     )
 
     lines!(
         axtop,
         df_upper_q[!, :time],
-        pop_size * df_upper_q[!, :K_stock],
+        pop_size * df_upper_q[!, :K_stock_t],
         color=color_ref
     )
 
     band_ = band!(
         axtop,
         df_lower_q[!, :time],
-        pop_size * df_lower_q[!, :K_stock],
-        pop_size * df_upper_q[!, :K_stock],
+        pop_size * df_lower_q[!, :K_stock_t],
+        pop_size * df_upper_q[!, :K_stock_t],
         alpha=0.3
     )
 
     lines!(
         axtop,
         df_ref[!, :time],
-        pop_size * df_ref[!, :K_stock],
+        pop_size * df_ref[!, :K_stock_t],
         color=color_ref
     )
     med_line = lines!(
         axtop,
         df_median[!, :time],
-        pop_size * df_median[!, :K_stock],
+        pop_size * df_median[!, :K_stock_t],
         color=color_m
     )
     i = i + 1
@@ -134,7 +134,7 @@ function get_confidence_bands(
     lines!(
         axtop,
         df_median[!, :time],
-        pop_size * df_median[!, :K_stock],
+        pop_size * df_median[!, :K_stock_t],
         color=color_m
     )
     i = i + 1

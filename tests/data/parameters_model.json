@@ -71,7 +71,7 @@
         600.0,
         1000.0
     ],
-    "low_stock": 2000.0,
+    "backup_inventory_level": 2000.0,
     "operational_stock_levels": [
         0.45,
         0.5,

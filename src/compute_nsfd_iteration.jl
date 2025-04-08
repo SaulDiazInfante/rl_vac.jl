@@ -1,61 +1,56 @@
 function compute_nsfd_iteration!(
-    t::Float64,
-    x::DataFrame,
-    opt_policy,
-    a_t::Float64,
-    k::Float64,
-    parameters::DataFrame
+    args...
 )::Vector{Float64}
 
     x_new = zeros(17)
-    x_new[1] = t
-    S = x.S[1]
-    E = x.E[1]
-    I_S = x.I_S[1]
-    I_A = x.I_A[1]
-    R = x.R[1]
-    D = x.D[1]
-    V = x.V[1]
-    X_vac = x.X_vac[1]
-    X_0_mayer = x.X_0_mayer[1]
-    index = get_stencil_projection(x.time[1], parameters)
-    n_deliveries = size(parameters.t_delivery, 1)
+    x_new[1] = args.t
+    S = args.x.S[1]
+    E = args.x.E[1]
+    I_S = args.x.I_S[1]
+    I_A = args.x.I_A[1]
+    R = args.x.R[1]
+    D = args.x.D[1]
+    V = args.x.V[1]
+    X_vac = args.x.X_vac[1]
+    X_0_mayer = args.x.X_0_mayer[1]
+    index = get_stencil_projection(args.x.time[1], args.parameters)
+    n_deliveries = size(args.parameters.t_delivery, 1)
     if (index >= n_deliveries)
         print("WARNING: simulation time OverflowErr")
     end
     # Unpack parameters
-    X_vac_interval = parameters.X_vac_interval[index]
-    K = x.K_stock[1]
-    omega_v = parameters.omega_v[1]
-    p = parameters.p[1]
-    alpha_a = parameters.alpha_a[1]
-    alpha_s = parameters.alpha_s[1]
-    theta = parameters.theta[1]
-    delta_e = parameters.delta_e[1]
-    delta_r = parameters.delta_r[1]
-    mu = parameters.mu[1]
-    epsilon = parameters.epsilon[1]
-    beta_s = parameters.beta_s[1]
-    beta_a = parameters.beta_a[1]
+    X_vac_interval = args.parameters.X_vac_interval[index]
+    K = args.x.K_stock_t
+    omega_v = args.parameters.omega_v
+    p = args.parameters.p[1]
+    alpha_a = args.parameters.alpha_a[1]
+    alpha_s = args.parameters.alpha_s[1]
+    theta = args.parameters.theta[1]
+    delta_e = args.parameters.delta_e[1]
+    delta_r = args.parameters.delta_r[1]
+    mu = args.parameters.mu[1]
+    epsilon = args.parameters.epsilon[1]
+    beta_s = args.parameters.beta_s[1]
+    beta_a = args.parameters.beta_a[1]
     #
-    N_grid_size = parameters.N_grid_size[1]
-    horizon_T = parameters.t_delivery[index+1] - parameters.t_delivery[index]
+    N_grid_size = args.parameters.N_grid_size[1]
+    horizon_T = args.parameters.t_delivery[index+1] - args.parameters.t_delivery[index]
     h = horizon_T / N_grid_size
     psi = 1 - exp(-h)
     # Dictionary for the OU process
     par_ou = Dict(
-        :theta_T => parameters[1, :theta_T],
-        :mu_T => parameters[1, :mu_T],
-        :sigma_T => parameters[1, :sigma_T],
-        :kappa => parameters[1, :kappa],
+        :theta_T => args.parameters[1, :theta_T],
+        :mu_T => args.parameters[1, :mu_T],
+        :sigma_T => args.parameters[1, :sigma_T],
+        :kappa => args.parameters[1, :kappa],
         :inventory_level => K,
-        :t0 => max(x.time[1] - h, 0),
-        :T_t_0 => x.T[1],
-        :h_coarse => h,
-        :n => Int32(parameters[1, :N_refinement_steps]),
-        :n_omega => Int32(parameters[1, :N_radom_variables_per_step]),
-        :seed => Int32(parameters[1, :seed]),
-        :debug_flag => parameters[1, :debug],
+        :t0 => max(args.x.time[1] - h, 0),
+        :T_t_0 => args.x.T[1],
+        :h_coarse => args.parameters.h,
+        :n => Int32(args.parameters[1, :N_refinement_steps]),
+        :n_omega => Int32(args.parameters[1, :N_radom_variables_per_step]),
+        :seed => Int32(args.parameters[1, :seed]),
+        :debug_flag => args.parameters[1, :debug],
     )
     # Compute new state variables
     hat_N_n = S + E + I_S + I_A + R + V
@@ -69,7 +64,7 @@ function compute_nsfd_iteration!(
         (1 - psi * mu) * S
         +
         psi * (mu * hat_N_n + omega_v * V + delta_r * R)
-    ) / (1 + psi * (lambda_f + opt_policy * a_t))
+    ) / (1 + psi * (lambda_f + args.opt_policy * args.action_t))
 
     E_new = (
         (1 - psi * mu) * E
@@ -103,7 +98,7 @@ function compute_nsfd_iteration!(
         1 - psi * (
             (1 - epsilon) * lambda_f + mu + omega_v
         )
-    ) * V + psi * (opt_policy * a_t) * S_new
+    ) * V + psi * (args.opt_policy * args.action_t) * S_new
     x_new[2:8] = [
         S_new,
         E_new,
@@ -124,7 +119,7 @@ function compute_nsfd_iteration!(
         V_new
     ]
     )
-    delta_X_vac = (opt_policy * a_t) * (S + E + I_A + R) * psi
+    delta_X_vac = (args.opt_policy * args.action_t) * (S + E + I_A + R) * psi
     X_vac_new = X_vac + delta_X_vac
 
     temp_lambda_loss = compute_mr_ou_temp_loss(; par_ou...)
@@ -132,10 +127,10 @@ function compute_nsfd_iteration!(
     ou_temp = temp_lambda_loss[:temp_j]
     # Stock actualization:
     # current stock equals delivery plus stock of previous interval
-    current_stock = k + X_vac_interval
-    stock_demand = X_vac_new
+    current_stock = k
+    stock_demand = X_vac_new - X_vac_interval
     K_new = maximum([0.0, -(stock_demand + loss_vac) + current_stock])
-    X_0_mayer_new = X_0_mayer + psi * compute_cost(x, parameters)
+    X_0_mayer_new = X_0_mayer + psi * compute_cost(x, args.parameters)
     x_new[9] = CL_new
     x_new[10] = X_vac_new
     x_new[11] = X_0_mayer_new
@@ -143,8 +138,8 @@ function compute_nsfd_iteration!(
 
     x_new[13] = ou_temp
     x_new[14] = loss_vac
-    x_new[15] = a_t
-    x_new[16] = opt_policy
+    x_new[15] = args.action_t
+    x_new[16] = args.opt_policy
     x_new[17] = index
     return x_new
 end

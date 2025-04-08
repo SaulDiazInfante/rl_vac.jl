@@ -11,7 +11,7 @@ module rl_vac
     include_dependency(path)
     read(path, String)
 =#
-using JSON, DataFrames, Distributions
+using JSON, JSON3, DataFrames, Distributions
 using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
@@ -40,6 +40,7 @@ export tag_file
 export interpolate_mc_paths
 export optimize_interval_solution
 export get_initial_condition
+export json_to_struct
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -64,4 +65,6 @@ include("tag_file.jl")
 include("interpolate_mc_paths.jl")
 include("optimize_interval_solution.jl")
 include("get_initial_condition.jl")
+include("json_to_struct.jl")
+include("rl_vac_types.jl")
 end

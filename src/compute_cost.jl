@@ -8,7 +8,7 @@ state and action.
 
 - `t::Float`: time 
 - `x::DataFrame`: System current state
-- `a_t::Float`: action, that is a proportion of the total jabs projected
+- `action_t::Float`: action, that is a proportion of the total jabs projected
   that would be administrated.
 - `k::Float`: current level of the vaccine-stock.
 - `parameters::DataFrame`: current parameters.
@@ -31,11 +31,11 @@ function compute_cost(x::DataFrame, parameters::DataFrame)::Float64
     V_0 = parameters.V_0[1]
     X_vac_0 = 0.0
     X_0_mayer_0 = x.X_0_mayer
-    k_0 = parameters.k_stock[1] / parameters.N[1]
+    k_0 = parameters.delivery_size_k[1] / parameters.N[1]
     # #    "psi_v": 0.00123969,
     CL0 = sum([S_0, E_0, I_S_0, I_A_0, R_0, D_0, V_0])
     omega_v = parameters.omega_v[1]
-    #a_t = 0.0
+    #action_t = 0.0
     p = parameters.p[1]
     alpha_a = parameters.alpha_a[1]
     alpha_s = parameters.alpha_s[1]
@@ -50,7 +50,7 @@ function compute_cost(x::DataFrame, parameters::DataFrame)::Float64
         "t", "S", "E",
         "I_S", "I_A", "R",
         "D", "V", "CL",
-        "X_vac", "X_0_mayer","K_stock", 
+        "X_vac", "X_0_mayer", "K_stock_t",
         "action", "opt_policy"
     ]
     x_0= [
@@ -69,7 +69,7 @@ function compute_cost(x::DataFrame, parameters::DataFrame)::Float64
 
     yll = m_yll * p * delta_e * (x.E - x_0.E)
     yld = m_yld * theta * alpha_s * (x.E - x_0.E)
-    stock_cost = m_stock_cost * (x.K_stock - x_0.K_stock)
+    stock_cost = m_stock_cost * (x.K_stock_t - x_0.K_stock_t)
     campaign_cost = m_campaign_cost * (x.X_vac - x_0.X_vac)
     return sum([yll, yld, stock_cost, campaign_cost])[1]
 

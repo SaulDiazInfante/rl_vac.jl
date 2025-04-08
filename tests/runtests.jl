@@ -8,7 +8,7 @@ p = load_parameters(
 )
 p_sto = get_stochastic_perturbation();
 t = 90.0;
-a_t = 0.25;
+action_tion_t = 0.25;
 k = 0.0015;
 S = p.S_0[1];
 E = p.E_0[1];
@@ -19,7 +19,7 @@ D = p.D_0[1];
 V = p.V_0[1];
 X_vac = p.X_vac_interval[1]
 X_0_mayer = p.X_0_mayer[1]
-K_stock = p.k_stock[1]
+K_stock_t = p.k_stock[1]
 k_0 = p.k_stock[1] / p.N[1]
 CL = sum([S, E, I_S, I_A, R, D, V])
 opt_policy = 1.0
@@ -32,14 +32,14 @@ solution = zeros(Float64, N_grid_size, 13);
 header_str = [
     "t", "S", "E", "I_S",
     "I_A", "R", "D", "V", "CL",
-    "X_vac", "X_0_mayer", "K_stock",
+    "X_vac", "X_0_mayer", "K_stock_t",
     "action", "opt_policy"
 ]
 x_0_vector = [
     0.0, S, E,
     I_S, I_A, R,
     D, V, CL,
-    X_vac, X_0_mayer, K_stock,
+    X_vac, X_0_mayer, K_stock_t,
     0.0, 1.0
 ]
 hat_N_n_0 = sum(x_0_vector[2:8]) - D
@@ -61,7 +61,7 @@ x_df = DataFrame(
 )
 x_new =
     rhs_evaluation!(
-        t, x_df, opt_policy, a_t, k, p
+        t, x_df, opt_policy, action_tion_t, k, p
     )
 x_new_df = DataFrame(
     Dict(
@@ -73,13 +73,13 @@ x_c =
 t = 80.0
 k = 2
 
-a_t = get_vaccine_action!(x_c, t_delivery_1, p)
+action_tion_t = get_vaccine_action!(x_c, t_delivery_1, p)
 
 x = get_interval_solution!(
     t_interval_1,
     x_0,
     opt_policy,
-    a_t,
+    action_tion_t,
     k_0,
     p
 );
@@ -124,7 +124,7 @@ time = x[:, 1]
         t_interval_1,
         x_0,
         opt_policy,
-        a_t,
+        action_tion_t,
         k_0,
         p
     )
@@ -135,7 +135,7 @@ time = x[:, 1]
     names_str = ["time", "S", "E",
         "I_S", "I_A", "R",
         "D", "V", "CL",
-        "X_vac", "K_stock", "action"
+        "X_vac", "K_stock_t", "action"
     ]
     df = save_interval_solution(x;
         header_str=names_str,

@@ -4,7 +4,7 @@
             ["time", "S", "E",
             "I_S", "I_A", "R",
             "D", "V", "CL",
-            "X_vac", "K_stock", "action"],
+            "X_vac", "K_stock_t", "action"],
         file_name = "solution_interval.csv"
         )
 
@@ -25,7 +25,7 @@ function save_interval_solution(
         "time", "S", "E",
         "I_S", "I_A", "R",
         "D", "V", "CL",
-        "X_vac", "X_0_mayer", "K_stock",
+        "X_vac", "X_0_mayer", "K_stock_t",
         "T", "loss", "action",
         "opt_policy", "t_interval_idx"
     ],

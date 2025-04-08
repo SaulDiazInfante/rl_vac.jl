@@ -9,7 +9,7 @@ function solution_vector_df(x_t::DataFrame)
     V_0 = x_t.V[1]
     X_0_mayer_0 = x_t.X_0_mayer[1]
     X_vac_0 = x_t.X_vac[1]
-    k_0 = x_t.K_stock[1]
+    k_0 = x_t.K_stock_t[1]
     CL0 = x_t.CL[1]
     T_0_k = x_t.T[1]
     loss = 0.0
@@ -18,7 +18,7 @@ function solution_vector_df(x_t::DataFrame)
         I_S_0, I_A_0, R_0,
         D_0, V_0, CL0,
         X_vac_0, X_0_mayer_0, k_0,
-        T_0_k, loss, a_t,
+        T_0_k, loss, action_t,
         opt_policy, index
     ]
 
@@ -26,7 +26,7 @@ function solution_vector_df(x_t::DataFrame)
         "time", "S", "E",
         "I_S", "I_A", "R",
         "D", "V", "CL",
-        "X_vac", "X_0_mayer", "K_stock",
+        "X_vac", "X_0_mayer", "K_stock_t",
         "T", "loss", "action",
         "opt_policy", "t_index_interval"
     ]

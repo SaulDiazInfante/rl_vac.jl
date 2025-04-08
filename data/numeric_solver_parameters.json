@@ -1,0 +1,7 @@
+{
+    "N_grid_size": 500,
+    "N_refinement_steps": 100,
+    "N_radom_variables_per_step": 100,
+    "seed": 42,
+    "debug": false
+}

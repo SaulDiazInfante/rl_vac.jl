@@ -20,33 +20,33 @@ function get_stochastic_perturbation(
 
     par = load_parameters_to_df(json_file_name)
     t_delivery = par.t_delivery
-    k_stock = par.k_stock
+    delivery_size_k = par.delivery_size_k
     aux_t = zeros(length(t_delivery))
     aux_k = zeros(length(t_delivery))
-    aux_k[1] = k_stock[1]
+    aux_k[1] = delivery_size_k[1]
     aux_t[1] = t_delivery[1]
-    delta_t = 0.0
+    deltaction_t = 0.0
 
     #
     for t in eachindex(t_delivery[1:end-1])
         aux_t_ = t_delivery[t]
-        aux_k_ = k_stock[t+1]
-        eta_t = Truncated(
+        aux_k_ = delivery_size_k[t+1]
+        etaction_t = Truncated(
             Normal(
                 aux_k_,
                 0.5 * sqrt(aux_k_)
             ),
             0, 2 * aux_k_
         )
-        xi_t = rand(eta_t, 1)[1]
+        xi_t = rand(etaction_t, 1)[1]
         aux_k[t+1] = xi_t
         #
-        delta_t = t_delivery[t+1] - t_delivery[t]
-        tau = Normal(delta_t, 1.0 * sqrt(delta_t))
-        delta_tau = rand(tau, 1)[1]
-        aux_t[t+1] = aux_t_ + delta_tau
+        deltaction_t = t_delivery[t+1] - t_delivery[t]
+        tau = Normal(deltaction_t, 1.0 * sqrt(deltaction_t))
+        deltaction_tau = rand(tau, 1)[1]
+        aux_t[t+1] = aux_t_ + deltaction_tau
     end
     par.t_delivery = aux_t
-    par.k_stock = aux_k
+    par.delivery_size_k = aux_k
     return par
 end

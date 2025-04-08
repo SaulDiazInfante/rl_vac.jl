@@ -12,11 +12,11 @@ function get_interpolated_solution(trajectory::DataFrame, time_line)
     state_names = [
         "time", "S", "E", "I_S",
         "I_A", "R", "D", "V",
-        "CL", "X_vac", "X_0_mayer", "K_stock",
+        "CL", "X_vac", "X_0_mayer", "K_stock_t",
         "T", "loss", "action", "opt_policy"
     ]
     par = load_parameters_to_df()
-    k = par.low_stock[1] / par.N[1]
+    k = par.[1] / par.N[1]
     trajectory_time = trajectory.time
     trajectory_time = unique(sort(trajectory_time))
     dim = [length(time_line), length(state_names)]

@@ -129,7 +129,7 @@ function get_deterministic_plot_path(
     lines!(
         ax_top_1_f1,
         df_ref[!, :time],
-        pop_size * df_ref[!, :K_stock],
+        pop_size * df_ref[!, :K_stock_t],
         color=color_ref
     )
 
