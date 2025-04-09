@@ -17,6 +17,14 @@ using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
 using Debugger, Random
 #
+
+include("rl_vac_types.jl")
+
+export structState
+export structModelParameters
+export structNumericSolverParameters
+export structInventoryParameters
+
 export load_parameters_to_df
 export get_stencil_projection
 export rhs_evaluation!
@@ -66,5 +74,4 @@ include("interpolate_mc_paths.jl")
 include("optimize_interval_solution.jl")
 include("get_initial_condition.jl")
 include("json_to_struct.jl")
-include("rl_vac_types.jl")
 end

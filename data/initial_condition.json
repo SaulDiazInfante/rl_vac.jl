@@ -1,6 +1,6 @@
 {
     "time": 0.0,
-    "S": 0.463606046,
+    "S": 0.4636060460000001,
     "E": 0.00067033,
     "I_S": 9.283e-05,
     "I_A": 0.00120986,
@@ -9,8 +9,9 @@
     "V": 0.0,
     "Conservative_Law": 1.0,
     "X_vac": 0.0,
+    "previous_stage_cumulative_vaccination": 0.0,
     "X_0_mayer": 0.0,
-    "K_stock_t": 1000000.0,
+    "K_stock_t": 0.037812279802551835,
     "T": -70.0,
     "stock_loss": 0.0,
     "action": 0.0,

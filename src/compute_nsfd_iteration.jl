@@ -1,56 +1,97 @@
+"""
+    compute_nsfd_iteration!(args::Dict{String,Any})::Vector{Float64}
+
+This function computes the next iteration of a non-standard finite difference (NSFD) scheme for a given state and updates the state in-place. It models the dynamics of a system with compartments such as susceptible, exposed, infected, recovered, deceased, and vaccinated populations, as well as inventory and vaccination policies.
+
+# Arguments
+- `args::Dict{String,Any}`: A dictionary containing the following keys:
+  - `"state"`: The current state of the system, represented as a `structState` object.
+  - `"inventory_parameters"`: Parameters related to inventory and delivery schedules.
+  - `"model_parameters"`: Parameters defining the model dynamics, such as infection rates, recovery rates, and vaccination rates.
+  - `"numeric_solver_parameters"`: Parameters for the numerical solver, including grid size, refinement steps, and random variable settings.
+
+# Returns
+- `Vector{Float64}`: A vector representing the updated state variables.
+
+# Details
+The function performs the following steps:
+1. Extracts the current state and parameters from the `args` dictionary.
+2. Computes intermediate variables such as the infection force (`lambda_f`), new compartment values (`S_new`, `E_new`, etc.), and auxiliary variables like cumulative vaccination and inventory levels.
+3. Updates the state variables using the NSFD scheme, ensuring conservation laws are approximately satisfied.
+4. Computes additional metrics such as temperature loss and vaccination loss using auxiliary functions.
+5. Updates the `args["state"]` with the new state.
+
+# Notes
+- The function assumes that the state variables are normalized such that the total population (excluding deceased) is approximately 1.
+- A warning is printed if the simulation time exceeds the delivery schedule or if conservation laws are violated.
+- The function relies on external helper functions such as `get_stencil_projection`, `compute_mr_ou_temp_loss`, and `compute_cost`.
+
+# Example Usage
+"""
 function compute_nsfd_iteration!(
-    args...
+    args::Dict{String,Any}
 )::Vector{Float64}
 
-    x_new = zeros(17)
-    x_new[1] = args.t
-    S = args.x.S[1]
-    E = args.x.E[1]
-    I_S = args.x.I_S[1]
-    I_A = args.x.I_A[1]
-    R = args.x.R[1]
-    D = args.x.D[1]
-    V = args.x.V[1]
-    X_vac = args.x.X_vac[1]
-    X_0_mayer = args.x.X_0_mayer[1]
-    index = get_stencil_projection(args.x.time[1], args.parameters)
-    n_deliveries = size(args.parameters.t_delivery, 1)
+    old_state = args["state"]
+    inventory_par = args["inventory_parameters"]
+    mod_par = args["model_parameters"]
+    numeric_solver_par = args["numeric_solver_parameters"]
+    dim = length(fieldnames(structState))
+
+    x_new = zeros(Float64, dim)
+    S = old_state.S
+    E = old_state.E
+    I_S = old_state.I_S
+    I_A = old_state.I_A
+    R = old_state.R
+    D = old_state.D
+    V = old_state.V
+    X_vac = old_state.X_vac
+    X_vac_interval = old_state.previous_stage_cumulative_vaccination
+    X_0_mayer = old_state.X_0_mayer
+    K = old_state.K_stock_t
+    opt_policy = old_state.opt_policy
+    action = old_state.action
+
+    index = get_stencil_projection(old_state.time, inventory_par)
+    n_deliveries = size(inventory_par.t_delivery, 1)
     if (index >= n_deliveries)
         print("WARNING: simulation time OverflowErr")
     end
-    # Unpack parameters
-    X_vac_interval = args.parameters.X_vac_interval[index]
-    K = args.x.K_stock_t
-    omega_v = args.parameters.omega_v
-    p = args.parameters.p[1]
-    alpha_a = args.parameters.alpha_a[1]
-    alpha_s = args.parameters.alpha_s[1]
-    theta = args.parameters.theta[1]
-    delta_e = args.parameters.delta_e[1]
-    delta_r = args.parameters.delta_r[1]
-    mu = args.parameters.mu[1]
-    epsilon = args.parameters.epsilon[1]
-    beta_s = args.parameters.beta_s[1]
-    beta_a = args.parameters.beta_a[1]
+
+    omega_v = mod_par.omega_v
+    p = mod_par.p
+    alpha_a = mod_par.alpha_a
+    alpha_s = mod_par.alpha_s
+    theta = mod_par.theta
+    delta_e = mod_par.delta_e
+    delta_r = mod_par.delta_r
+    mu = mod_par.mu
+    epsilon = mod_par.epsilon
+    beta_s = mod_par.beta_s
+    beta_a = mod_par.beta_a
     #
-    N_grid_size = args.parameters.N_grid_size[1]
-    horizon_T = args.parameters.t_delivery[index+1] - args.parameters.t_delivery[index]
+    N_grid_size = numeric_solver_par.N_grid_size
+    horizon_T = (
+        inventory_par.t_delivery[index+1] - inventory_par.t_delivery[index]
+    )
     h = horizon_T / N_grid_size
+    x_new[1] = old_state.time + h
     psi = 1 - exp(-h)
-    # Dictionary for the OU process
+
     par_ou = Dict(
-        :theta_T => args.parameters[1, :theta_T],
-        :mu_T => args.parameters[1, :mu_T],
-        :sigma_T => args.parameters[1, :sigma_T],
-        :kappa => args.parameters[1, :kappa],
-        :inventory_level => K,
-        :t0 => max(args.x.time[1] - h, 0),
-        :T_t_0 => args.x.T[1],
-        :h_coarse => args.parameters.h,
-        :n => Int32(args.parameters[1, :N_refinement_steps]),
-        :n_omega => Int32(args.parameters[1, :N_radom_variables_per_step]),
-        :seed => Int32(args.parameters[1, :seed]),
-        :debug_flag => args.parameters[1, :debug],
+        :theta_T => mod_par.theta_T,
+        :mu_T => mod_par.mu_T,
+        :sigma_T => mod_par.sigma_T,
+        :kappa => mod_par.kappa,
+        :inventory_level => old_state.K_stock_t,
+        :t0 => max(old_state.time - h, 0),
+        :T_t_0 => old_state.T,
+        :h_coarse => h,
+        :n => numeric_solver_par.N_refinement_steps,
+        :n_omega => numeric_solver_par.N_radom_variables_per_step,
+        :seed => numeric_solver_par.seed,
+        :debug_flag => numeric_solver_par.debug
     )
     # Compute new state variables
     hat_N_n = S + E + I_S + I_A + R + V
@@ -64,7 +105,7 @@ function compute_nsfd_iteration!(
         (1 - psi * mu) * S
         +
         psi * (mu * hat_N_n + omega_v * V + delta_r * R)
-    ) / (1 + psi * (lambda_f + args.opt_policy * args.action_t))
+    ) / (1 + psi * (lambda_f + opt_policy * action))
 
     E_new = (
         (1 - psi * mu) * E
@@ -98,7 +139,7 @@ function compute_nsfd_iteration!(
         1 - psi * (
             (1 - epsilon) * lambda_f + mu + omega_v
         )
-    ) * V + psi * (args.opt_policy * args.action_t) * S_new
+    ) * V + psi * (opt_policy * action) * S_new
     x_new[2:8] = [
         S_new,
         E_new,
@@ -108,8 +149,7 @@ function compute_nsfd_iteration!(
         D_new,
         V_new
     ]
-    CL_new = sum(
-        [
+    CL_new = sum([
         S_new,
         E_new,
         I_S_new,
@@ -117,20 +157,18 @@ function compute_nsfd_iteration!(
         R_new,
         D_new,
         V_new
-    ]
-    )
-    delta_X_vac = (args.opt_policy * args.action_t) * (S + E + I_A + R) * psi
+    ])
+    delta_X_vac = (opt_policy * action) * (S + E + I_A + R) * psi
     X_vac_new = X_vac + delta_X_vac
 
     temp_lambda_loss = compute_mr_ou_temp_loss(; par_ou...)
     loss_vac = temp_lambda_loss[:loss_j]
     ou_temp = temp_lambda_loss[:temp_j]
-    # Stock actualization:
-    # current stock equals delivery plus stock of previous interval
-    current_stock = k
+
+    current_stock = K
     stock_demand = X_vac_new - X_vac_interval
     K_new = maximum([0.0, -(stock_demand + loss_vac) + current_stock])
-    X_0_mayer_new = X_0_mayer + psi * compute_cost(x, args.parameters)
+    X_0_mayer_new = X_0_mayer + psi * compute_cost(args)
     x_new[9] = CL_new
     x_new[10] = X_vac_new
     x_new[11] = X_0_mayer_new
@@ -138,8 +176,29 @@ function compute_nsfd_iteration!(
 
     x_new[13] = ou_temp
     x_new[14] = loss_vac
-    x_new[15] = args.action_t
-    x_new[16] = args.opt_policy
+    x_new[15] = action
+    x_new[16] = opt_policy
     x_new[17] = index
+    new_state = structState(
+        x_new[1],
+        x_new[2],
+        x_new[3],
+        x_new[4],
+        x_new[5],
+        x_new[6],
+        x_new[7],
+        x_new[8],
+        x_new[9],
+        x_new[10],
+        X_vac_interval,
+        x_new[11],
+        x_new[12],
+        x_new[13],
+        x_new[14],
+        x_new[15],
+        x_new[16],
+        x_new[17]
+    )
+    args["state"] = new_state
     return x_new
 end

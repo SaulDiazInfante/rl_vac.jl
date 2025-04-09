@@ -1,77 +1,55 @@
 """
-    compute_cost(x::DataFrame, parameters::DataFrame)::Float64
+    compute_cost(args::Dict{String,Any})::Float64
 
-Compute the functional cost given the current 
-state and action.
+Compute the total cost based on the provided arguments.
 
 # Arguments
+- `args::Dict{String,Any}`: A dictionary containing the following keys:
+  - `"initial_condition"`: An object representing the initial state of the system.
+  - `"state"`: An object representing the current state of the system.
+  - `"model_parameters"`: An object containing model parameters such as `p`, `delta_e`, `theta`, and `alpha_s`.
+  - `"inventory_parameters"`: An object containing inventory parameters such as `yll_weight`, `yld_weight`, `stock_cost_weight`, and `campaign_cost_weight`.
 
-- `t::Float`: time 
-- `x::DataFrame`: System current state
-- `action_t::Float`: action, that is a proportion of the total jabs projected
-  that would be administrated.
-- `k::Float`: current level of the vaccine-stock.
-- `parameters::DataFrame`: current parameters.
-...
+# Returns
+- `Float64`: The computed total cost, which is the sum of the following components:
+  - `yll`: The cost associated with years of life lost (YLL), weighted by `yll_weight`.
+  - `yld`: The cost associated with years lived with disability (YLD), weighted by `yld_weight`.
+  - `stock_cost`: The cost associated with stock changes, weighted by `stock_cost_weight`.
+  - `campaign_cost`: The cost associated with vaccination campaigns, weighted by `campaign_cost_weight`.
+
+# Details
+The function calculates the cost components based on the difference between the current state and the initial condition, using the provided model and inventory parameters. The total cost is the sum of these components.
 """
-function compute_cost(x::DataFrame, parameters::DataFrame)::Float64
-    m_yll = parameters.yll_weight[1]
-    m_yld = parameters.yld_weight[1]
-    m_stock_cost = parameters.stock_cost_weight[1]
-    m_campaign_cost = parameters.campaign_cost_weight[1]
-
-    N_grid_size = parameters.N_grid_size[1];
-    #unpack initial condition
-    S_0 = parameters.S_0[1]
-    E_0 = parameters.E_0[1]
-    I_S_0 = parameters.I_S_0[1]
-    I_A_0 = parameters.I_A_0[1]
-    R_0 = parameters.R_0[1]
-    D_0 = parameters.D_0[1]
-    V_0 = parameters.V_0[1]
-    X_vac_0 = 0.0
-    X_0_mayer_0 = x.X_0_mayer
-    k_0 = parameters.delivery_size_k[1] / parameters.N[1]
-    # #    "psi_v": 0.00123969,
-    CL0 = sum([S_0, E_0, I_S_0, I_A_0, R_0, D_0, V_0])
-    omega_v = parameters.omega_v[1]
-    #action_t = 0.0
-    p = parameters.p[1]
-    alpha_a = parameters.alpha_a[1]
-    alpha_s = parameters.alpha_s[1]
-    theta = parameters.theta[1]
-    delta_e = parameters.delta_e[1]
-    delta_r = parameters.delta_r[1]
-    mu = parameters.mu[1]
-    epsilon = parameters.epsilon[1]
-    beta_s = parameters.beta_s[1]
-    beta_a = parameters.beta_a[1]
-    header_str = [
-        "t", "S", "E",
-        "I_S", "I_A", "R",
-        "D", "V", "CL",
-        "X_vac", "X_0_mayer", "K_stock_t",
-        "action", "opt_policy"
-    ]
-    x_0= [
-        0.0, S_0, E_0, I_S_0, I_A_0, R_0, 
-        D_0, V_0, CL0, X_vac_0, X_0_mayer_0, k_0, 0.0,
-        1.0
-    ]
-    x_0 = DataFrame(
-        Dict(
-            zip(
-                header_str,
-                x_0
-            )
-        )
-    )
-
-    yll = m_yll * p * delta_e * (x.E - x_0.E)
-    yld = m_yld * theta * alpha_s * (x.E - x_0.E)
-    stock_cost = m_stock_cost * (x.K_stock_t - x_0.K_stock_t)
-    campaign_cost = m_campaign_cost * (x.X_vac - x_0.X_vac)
-    return sum([yll, yld, stock_cost, campaign_cost])[1]
+function compute_cost(args::Dict{String,Any})::Float64
+    initial_condition = args["initial_condition"]
+    state = args["state"]
+    mod_par = args["model_parameters"]
+    inventory_par = args["inventory_parameters"]
 
 
+    m_yll = inventory_par.yll_weight[1]
+    m_yld = inventory_par.yld_weight[1]
+    m_stock_cost = inventory_par.stock_cost_weight[1]
+    m_campaign_cost = inventory_par.campaign_cost_weight[1]
+
+
+    E = state.E
+    E_0 = initial_condition.E
+    K_stock_t = state.K_stock_t
+    K_stock_t_0 = initial_condition.K_stock_t
+
+    X_vac = state.X_vac
+    X_vac_0 = initial_condition.X_vac
+
+    p = mod_par.p
+    delta_e = mod_par.delta_e
+    theta = mod_par.theta
+    alpha_s = mod_par.alpha_s
+
+    yll = m_yll * p * delta_e * (E - E_0)
+    yld = m_yld * theta * alpha_s * (E - E_0)
+    stock_cost = m_stock_cost * (K_stock_t - K_stock_t_0)
+    campaign_cost = m_campaign_cost * (X_vac - X_vac_0)
+    cost = sum([yll, yld, stock_cost, campaign_cost])
+    return cost
 end

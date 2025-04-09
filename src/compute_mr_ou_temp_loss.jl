@@ -52,8 +52,8 @@ function compute_mr_ou_temp_loss(;
     t0::Float64,
     T_t_0::Float64,
     h_coarse::Float64,
-    n::Int32,
-    n_omega::Int32,
+    n::Int64,
+    n_omega::Int64,
     seed=123,
     debug_flag=false
 )
