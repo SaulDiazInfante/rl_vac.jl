@@ -35,7 +35,7 @@ function get_solution_path!(parameters::DataFrame)::DataFrame
             current_inventory_size,
             parameters
         )
-        action_t = get_vaccine_action!(coverage, next_delivery_time, parameters)
+        action_t = get_max_vaccination_rate!(coverage, next_delivery_time, parameters)
         |
         initial_condition_at_stage_k[1, :action] = action_t
         initial_condition_at_stage_k[1, :K_stock_t] = current_inventory_size

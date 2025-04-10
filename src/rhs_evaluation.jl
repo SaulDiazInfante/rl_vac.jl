@@ -44,7 +44,7 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
                 print("WARNING: simulation time OverflowErr")
         end
 
-        # TO REVIEW X_vac_interval = args.x.X_vac_interval[index]
+
         x_new = compute_nsfd_iteration!(args)
         new_state = args["state"]
         CL_new = new_state.Conservative_Law

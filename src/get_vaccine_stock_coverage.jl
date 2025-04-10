@@ -1,18 +1,35 @@
 """
-    get_vaccine_stock_coverage(k, parameters)
+    get_vaccine_stock_coverage(args::Dict{String,Any})::Vector{Float64}
 
-Returns el percentage of population to vaccine when the inventory 
-level of interest is k and use the current parameters 
+Calculate the vaccine stock coverage based on the current inventory size, backup inventory level, and population size.
 
 # Arguments
-- `k:: Float64:` Current fraction of the maximum vaccine-stock level 
-- `parameters::DataFrame`: current parameters.
-...
+- `args::Dict{String,Any}`: A dictionary containing the following keys:
+  - `"state"`: An object that includes the current inventory size (`K_stock_t`).
+  - `"inventory_parameters"`: An object that includes the backup inventory level (`backup_inventory_level`).
+  - `"model_parameters"`: An object that includes the population size (`N`).
+
+# Returns
+- `Vector{Float64}`: A vector containing the vaccine stock coverage value, which is the maximum of the difference between the current inventory size and the normalized backup inventory level, or 0.0.
+
+# Notes
+- The backup inventory level is normalized by dividing it by the population size.
+- The function ensures that the stock coverage value is non-negative.
 """
-function get_vaccine_stock_coverage(current_inventory_size, parameters)
-    backup_inventory_level = (
-        parameters.backup_inventory_level[1] / parameters.N[1]
-    )
-    x_coverage = maximum([current_inventory_size - backup_inventory_level, 0.0])
+
+function get_vaccine_stock_coverage(
+    args::Dict{String,Any}
+)::Float64
+    state = args["state"]
+    inventory_parameters = args["inventory_parameters"]
+    model_parameters = args["model_parameters"]
+    backup_inventory_level = inventory_parameters.backup_inventory_level
+    population_size = model_parameters.N
+    normalized_backup_inventory_level = backup_inventory_level / population_size
+    current_inventory_size = state.K_stock_t
+    x_coverage = maximum([
+        current_inventory_size - normalized_backup_inventory_level,
+        0.0
+    ])
     return x_coverage
 end
