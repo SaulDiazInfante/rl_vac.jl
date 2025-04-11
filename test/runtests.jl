@@ -3,6 +3,8 @@ using rl_vac
 using DataFrames
 using Dates
 using JSON3
+using Random
+using Distributions
 
 @testset "rl_vac Tests" begin
     include("test_compute_cost.jl")
@@ -14,4 +16,5 @@ using JSON3
     include("test_get_max_vaccination_rate.jl")
     include("test_get_vaccine_stock_coverage.jl")
     include("test_json_to_struct.jl")
+    include("test_get_stochastic_perturbation.jl")
 end

@@ -28,7 +28,7 @@ export structInventoryParameters
 export load_parameters_to_df
 export get_stencil_projection
 export rhs_evaluation!
-export get_stochastic_perturbation
+export get_stochastic_perturbation!
 export compute_cost
 export get_vaccine_stock_coverage
 export get_max_vaccination_rate!
