@@ -32,7 +32,7 @@ export get_stochastic_perturbation!
 export compute_cost
 export get_vaccine_stock_coverage
 export get_max_vaccination_rate!
-export get_interval_solution!
+export get_stage_solution!
 export get_solution_path!
 export save_interval_solution
 export montecarlo_sampling
@@ -50,6 +50,7 @@ export optimize_interval_solution
 export get_initial_condition
 export json_to_struct
 export build_testing_parameters
+export get_struct_values
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -58,7 +59,7 @@ include("get_stochastic_perturbation.jl")
 include("compute_cost.jl")
 include("get_vaccine_stock_coverage.jl")
 include("get_max_vaccination_rate.jl")
-include("get_interval_solution.jl")
+include("get_stage_solution.jl")
 include("get_solution_path.jl")
 include("save_interval_solution.jl")
 include("montecarlo_sampling.jl")
@@ -76,4 +77,5 @@ include("optimize_interval_solution.jl")
 include("get_initial_condition.jl")
 include("json_to_struct.jl")
 include("build_testing_parameters.jl")
+include("get_struct_values.jl")
 end

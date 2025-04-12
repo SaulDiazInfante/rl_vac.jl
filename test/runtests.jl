@@ -17,4 +17,6 @@ using Distributions
     include("test_get_vaccine_stock_coverage.jl")
     include("test_json_to_struct.jl")
     include("test_get_stochastic_perturbation.jl")
+    include("test_get_struct_values.jl")
+    include("test_get_stage_solution.jl")
 end

@@ -37,7 +37,7 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
         inventory_par = args["inventory_parameters"]
         mod_par = args["model_parameters"]
         dim = length(fieldnames(structState))
-        x_new = zeros(Float64, dim)
+        x_new = zeros(Real, dim)
         index = get_stencil_projection(current_state.time, inventory_par)
         n_deliveries = size(inventory_par.t_delivery, 1)
         if (index >= n_deliveries)

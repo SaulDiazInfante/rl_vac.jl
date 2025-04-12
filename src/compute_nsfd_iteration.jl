@@ -38,7 +38,7 @@ function compute_nsfd_iteration!(
     numeric_solver_par = args["numeric_solver_parameters"]
     dim = length(fieldnames(structState))
 
-    x_new = zeros(Float64, dim)
+    x_new = zeros(Real, dim)
     S = old_state.S
     E = old_state.E
     I_S = old_state.I_S
@@ -171,14 +171,15 @@ function compute_nsfd_iteration!(
     X_0_mayer_new = X_0_mayer + psi * compute_cost(args)
     x_new[9] = CL_new
     x_new[10] = X_vac_new
-    x_new[11] = X_0_mayer_new
-    x_new[12] = K_new
+    x_new[11] = X_vac_interval
+    x_new[12] = X_0_mayer_new
+    x_new[13] = K_new
 
-    x_new[13] = ou_temp
-    x_new[14] = loss_vac
-    x_new[15] = action
-    x_new[16] = opt_policy
-    x_new[17] = index
+    x_new[14] = ou_temp
+    x_new[15] = loss_vac
+    x_new[16] = action
+    x_new[17] = opt_policy
+    x_new[18] = index
     new_state = structState(
         x_new[1],
         x_new[2],
@@ -190,14 +191,14 @@ function compute_nsfd_iteration!(
         x_new[8],
         x_new[9],
         x_new[10],
-        X_vac_interval,
         x_new[11],
         x_new[12],
         x_new[13],
         x_new[14],
         x_new[15],
         x_new[16],
-        x_new[17]
+        x_new[17],
+        x_new[18]
     )
     args["state"] = new_state
     return x_new
