@@ -6,13 +6,24 @@
     simulation configuration.
 ...
 """
-function get_solution_path!(parameters::DataFrame)::DataFrame
-    x_0 = get_initial_condition(parameters)
-    N_grid_size = parameters.N_grid_size[1]
+function get_solution_path!(args::Dict{String,Any})::DataFrame
+
+    args = build_testing_parameters()
+    initial_condition = args["initial_condition"]
+    state = args["state"]
+    model_parameters = args["model_parameters"]
+    numeric_solver_parameters = args["numeric_solver_parameters"]
+    inventory_parameters = args["inventory_parameters"]
+
+    N_grid_size = numeric_solver_parameters.N_grid_size
+    pop_size = model_parameters.N
     list_solution = []
     df_solution = DataFrame()
     prior_inventory = 0.0
-    initial_condition_at_stage_k = x_0
+    initial_condition_at_stage_k = get_struct_values(initial_condition)
+
+
+
 
     for t in range(1, length(parameters.t_delivery) - 1)
         normalized_delivery_size_at_stake_k = (
@@ -31,18 +42,12 @@ function get_solution_path!(parameters::DataFrame)::DataFrame
             next_delivery_time,
             N_grid_size
         )
-        coverage = get_vaccine_stock_coverage(
-            current_inventory_size,
-            parameters
-        )
-        action_t = get_max_vaccination_rate!(coverage, next_delivery_time, parameters)
-        |
-        initial_condition_at_stage_k[1, :action] = action_t
-        initial_condition_at_stage_k[1, :K_stock_t] = current_inventory_size
+        vaccine_coverage = get_vaccine_stock_coverage(args)
+        vaccination_rate = get_max_vaccination_rate!() |
+
         opt_solution_t = optimize_interval_solution(
             time_interval_k,
-            initial_condition_at_stage_k,
-            parameters
+            args
         )
         list_solution = push!(list_solution, opt_solution_t)
         prefix = "df_solution_"

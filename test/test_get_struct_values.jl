@@ -1,4 +1,3 @@
-#
 if !isdefined(Main, :TestStruct)
     struct TestStruct
         a::Int
@@ -6,7 +5,6 @@ if !isdefined(Main, :TestStruct)
         c::Float64
     end
 end
-
 @testset "get_struct_values tests" begin
     test_instance = TestStruct(42, "hello", 3.14)
     @test get_struct_values(test_instance) == [42, "hello", 3.14]

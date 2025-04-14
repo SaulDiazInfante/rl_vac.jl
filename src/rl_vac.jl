@@ -33,7 +33,7 @@ export compute_cost
 export get_vaccine_stock_coverage
 export get_max_vaccination_rate!
 export get_stage_solution!
-export get_solution_path!
+# export get_solution_path!
 export save_interval_solution
 export montecarlo_sampling
 export get_interpolated_solution
@@ -46,7 +46,7 @@ export compute_mr_ou_temp_loss
 export compute_nsfd_iteration!
 export tag_file
 export interpolate_mc_paths
-export optimize_interval_solution
+export optimize_stage_solution!
 export get_initial_condition
 export json_to_struct
 export build_testing_parameters
@@ -60,7 +60,7 @@ include("compute_cost.jl")
 include("get_vaccine_stock_coverage.jl")
 include("get_max_vaccination_rate.jl")
 include("get_stage_solution.jl")
-include("get_solution_path.jl")
+#include("get_solution_path.jl")
 include("save_interval_solution.jl")
 include("montecarlo_sampling.jl")
 include("get_interpolated_solution.jl")
@@ -73,7 +73,7 @@ include("compute_mr_ou_temp_loss.jl")
 include("compute_nsfd_iteration.jl")
 include("tag_file.jl")
 include("interpolate_mc_paths.jl")
-include("optimize_interval_solution.jl")
+include("optimize_stage_solution.jl")
 include("get_initial_condition.jl")
 include("json_to_struct.jl")
 include("build_testing_parameters.jl")
