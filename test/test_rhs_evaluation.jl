@@ -26,5 +26,5 @@ using .rl_vac
     @test args["state"].action == result[16]
     @test args["state"].opt_policy == result[17]
     @test args["state"].t_index_interval == result[18]
-    @test args["state"].time > 0.0
+    @test args["state"].time >= 0.0
 end

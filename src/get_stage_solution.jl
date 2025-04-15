@@ -41,7 +41,7 @@ function get_stage_solution!(args::Dict{String,Any})::Matrix{Real}
     for (j, t_j) in enumerate(time_interval_stencil[2:end])
         args["state"].time = t_j
         x_new = rhs_evaluation!(args)
-        sol[j, :] = x_new
+        sol[j+1, :] = x_new
     end
     return sol
 end

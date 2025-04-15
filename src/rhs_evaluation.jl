@@ -53,7 +53,7 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
         end
         X_vac_new = new_state.X_vac
         X_vac_interval = current_state.previous_stage_cumulative_vaccination
-        nominal_reserve_inventory = inventory_par.backup_inventory_level[index]
+        nominal_reserve_inventory = inventory_par.backup_inventory_level
         normalized_reserve_inventory =
                 nominal_reserve_inventory / mod_par.N
         reserve_inventory = normalized_reserve_inventory
