@@ -70,13 +70,10 @@ function compute_nsfd_iteration!(
     epsilon = mod_par.epsilon
     beta_s = mod_par.beta_s
     beta_a = mod_par.beta_a
+    h = numeric_solver_par.step_size_h
     #
-    N_grid_size = numeric_solver_par.N_grid_size
-    horizon_T = (
-        inventory_par.t_delivery[index+1] - inventory_par.t_delivery[index]
-    )
-    h = horizon_T / N_grid_size
-    x_new[1] = old_state.time + h
+
+    x_new[1] = old_state.time
     psi = 1 - exp(-h)
 
     par_ou = Dict(
@@ -85,10 +82,10 @@ function compute_nsfd_iteration!(
         :sigma_T => mod_par.sigma_T,
         :kappa => mod_par.kappa,
         :inventory_level => old_state.K_stock_t,
-        :t0 => max(old_state.time - h, 0),
+        :t0 => max(old_state.time, 0),
         :T_t_0 => old_state.T,
         :h_coarse => h,
-        :n => numeric_solver_par.N_refinement_steps,
+        :n => numeric_solver_par.N_refinement_per_step,
         :n_omega => numeric_solver_par.N_radom_variables_per_step,
         :seed => numeric_solver_par.seed,
         :debug_flag => numeric_solver_par.debug

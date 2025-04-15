@@ -25,17 +25,21 @@ Compute the solution of a system over a specified interval using a numerical sol
 function get_stage_solution!(args::Dict{String,Any})::Matrix{Real}
 
     state_dim = length(fieldnames(structState))
-
     numeric_solver_par = args["numeric_solver_parameters"]
     N_grid_size = numeric_solver_par.N_grid_size
+    initial_condition = args["initial_condition"]
+    time_interval_stencil = build_interval_stencil!(args)
+    initial_condition.time = time_interval_stencil[1]
 
-    sol = zeros(Real, N_grid_size, state_dim)
     x_new = zeros(Real, state_dim)
+    sol = zeros(Real, N_grid_size, state_dim)
     initial_state_values = get_struct_values(args["initial_condition"])
     x_00 = initial_state_values
     x_new = initial_state_values
     sol[1, :] = x_00
-    for j = 2:N_grid_size
+
+    for (j, t_j) in enumerate(time_interval_stencil[2:end])
+        args["state"].time = t_j
         x_new = rhs_evaluation!(args)
         sol[j, :] = x_new
     end

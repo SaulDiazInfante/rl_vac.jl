@@ -7,6 +7,7 @@ using Random
 using Distributions
 
 @testset "rl_vac Tests" begin
+    include("test_build_testing_parameters.jl")
     include("test_compute_cost.jl")
     include("test_compute_nsfd_iteration.jl")
     include("test_rhs_evaluation.jl")
@@ -21,4 +22,5 @@ using Distributions
     include("test_get_stage_solution.jl")
     include("test_optimize_stage_solution.jl")
     include("test_get_vaccine_stock_coverage.jl")
+    include("test_build_interval_stencil.jl")
 end

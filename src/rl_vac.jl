@@ -51,6 +51,7 @@ export get_initial_condition
 export json_to_struct
 export build_testing_parameters
 export get_struct_values
+export build_interval_stencil!
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -78,4 +79,5 @@ include("get_initial_condition.jl")
 include("json_to_struct.jl")
 include("build_testing_parameters.jl")
 include("get_struct_values.jl")
+include("build_interval_stencil.jl")
 end

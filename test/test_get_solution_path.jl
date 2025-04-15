@@ -1,6 +1,7 @@
-using Test  # Ensure the Test module is imported for @test macro
+using Test
 using rl_vac
 using DataFrames, CSV
+using Debugger
 
 args = build_testing_parameters()
 
@@ -26,18 +27,8 @@ for t in range(1, length(inventory_parameters.t_delivery) - 1)
                                normalized_delivery_size_at_stake_k
       next_delivery_time = inventory_parameters.t_delivery[t+1]
       current_delivery_time = inventory_parameters.t_delivery[t]
-      h = (
-            next_delivery_time -
-            current_delivery_time
-      ) / N_grid_size
-      time_interval_k = LinRange(
-            current_delivery_time + h,
-            next_delivery_time,
-            N_grid_size
-      )
-
       vaccine_coverage = get_vaccine_stock_coverage(args)
       vaccination_rate = get_max_vaccination_rate!(vaccine_coverage, args)
-
-
+      Debugger.@enter optimize_stage_solution!(args)
+      # stage_solution = optimize_stage_solution!(args)
 end

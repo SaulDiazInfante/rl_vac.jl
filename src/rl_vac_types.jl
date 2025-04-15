@@ -39,10 +39,12 @@ Base.@kwdef mutable struct structModelParameters
     N::Float64
 end
 
-
 Base.@kwdef mutable struct structNumericSolverParameters
     N_grid_size::Int64
-    N_refinement_steps::Int64
+    stage_interval::Vector{Float64}
+    step_size_h::Float64
+    N_refinement_per_step::Int64
+    refinement_step_size_h::Float64
     N_radom_variables_per_step::Int64
     seed::Int64
     debug::Bool

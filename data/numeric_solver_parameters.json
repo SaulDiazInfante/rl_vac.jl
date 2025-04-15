@@ -1,6 +1,12 @@
 {
-    "N_grid_size": 500,
-    "N_refinement_steps": 100,
+    "N_grid_size": 501,
+    "stage_interval": [
+        0.0,
+        80.0
+    ],
+    "step_size_h": 0.16,
+    "N_refinement_per_step": 100,
+    "refinement_step_size_h": 0.0016,
     "N_radom_variables_per_step": 100,
     "seed": 42,
     "debug": false
