@@ -60,3 +60,75 @@ Base.@kwdef mutable struct structInventoryParameters
     campaign_cost_weight::Vector{Float64}
     operational_stock_levels::Vector{Float64}
 end
+
+
+function Base.copy(state::structState)::structState
+    return structState(
+        state.time,
+        state.S,
+        state.E,
+        state.I_S,
+        state.I_A,
+        state.R,
+        state.D,
+        state.V,
+        state.Conservative_Law,
+        state.X_vac,
+        state.previous_stage_cumulative_vaccination,
+        state.X_0_mayer,
+        state.K_stock_t,
+        state.T,
+        state.stock_loss,
+        state.action,
+        state.opt_policy,
+        state.t_index_interval
+    )
+end
+
+function Base.copy(InventoryParameters::structInventoryParameters)::structInventoryParameters
+    return structInventoryParameters(
+        InventoryParameters.backup_inventory_level,
+        InventoryParameters.t_delivery,
+        InventoryParameters.delivery_size_k,
+        InventoryParameters.yll_weight,
+        InventoryParameters.yld_weight,
+        InventoryParameters.stock_cost_weight,
+        InventoryParameters.campaign_cost_weight,
+        InventoryParameters.operational_stock_levels
+    )
+end
+
+function Base.copy(ModelParameters::structModelParameters)::structModelParameters
+    return structModelParameters(
+        ModelParameters.beta_s,
+        ModelParameters.beta_a,
+        ModelParameters.epsilon,
+        ModelParameters.delta_e,
+        ModelParameters.omega_v,
+        ModelParameters.delta_r,
+        ModelParameters.p,
+        ModelParameters.alpha_a,
+        ModelParameters.alpha_s,
+        ModelParameters.theta,
+        ModelParameters.mu,
+        ModelParameters.psi_v,
+        ModelParameters.theta_T,
+        ModelParameters.mu_T,
+        ModelParameters.sigma_T,
+        ModelParameters.kappa,
+        ModelParameters.N
+    )
+end
+
+function Base.copy(NumericSolverParameters::structNumericSolverParameters)::structNumericSolverParameters
+    return structNumericSolverParameters(
+        NumericSolverParameters.N_grid_size,
+        NumericSolverParameters.stage_interval,
+        NumericSolverParameters.step_size_h,
+        NumericSolverParameters.N_refinement_per_step,
+        NumericSolverParameters.refinement_step_size_h,
+        NumericSolverParameters.N_radom_variables_per_step,
+        NumericSolverParameters.seed,
+        NumericSolverParameters.debug
+    )
+end

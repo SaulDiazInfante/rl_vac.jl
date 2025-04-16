@@ -23,7 +23,7 @@ This function modifies the input dictionary `args` in-place.
 function build_interval_stencil!(
     args::Dict{String,Any}
 )::LinRange{Float64,Int64}
-    numeric_solver_par = args["numeric_solver_parameters"]
+  numeric_solver_par = copy(args["numeric_solver_parameters"])
     stage_initial_time = numeric_solver_par.stage_interval[1]
     stage_final_time = numeric_solver_par.stage_interval[2]
     N_grid_size = numeric_solver_par.N_grid_size
