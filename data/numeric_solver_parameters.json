@@ -1,6 +1,6 @@
 {
     "N_grid_size": 501,
-    "stage_interval": [
+    "current_stage_interval": [
         0.0,
         80.0
     ],
