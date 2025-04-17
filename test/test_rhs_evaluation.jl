@@ -1,9 +1,7 @@
-using Test
-using .rl_vac
-
 @testset "rhs_evaluation! tests" begin
 
     args = build_testing_parameters()
+    process_first_inventory_reorder_point!(args)
     result = rhs_evaluation!(args)
     @test length(result) == length(fieldnames(structState))
     @test isapprox(sum(result[2:8]), 1.0; atol=1e-12)

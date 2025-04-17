@@ -23,4 +23,5 @@ using Distributions
     include("test_rhs_evaluation.jl")
     include("test_get_stage_solution.jl")
     include("test_optimize_stage_solution.jl")
+    include("test_process_first_inventory_reoreder_point.jl")
 end

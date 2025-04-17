@@ -24,7 +24,7 @@ The function iterates over a set of operational stock levels (`operational_fract
 """
 function optimize_stage_solution!(
   args::Dict{String,Any}
-)
+)::Matrix{Real}
 
   initial_condition = copy(args["initial_condition"])
   numeric_solver_par = copy(args["numeric_solver_parameters"])
@@ -38,18 +38,20 @@ function optimize_stage_solution!(
   opt_solution = zeros(Real, N_grid_size, state_dim)
   opt_cost = Inf
   copy_args = copy(args)
+  opt_args = copy(copy_args)
   for rho_k in operational_fractions
     initial_condition.opt_policy = rho_k
     copy_args["initial_condition"] = copy(initial_condition)
     copy_args["state"] = copy(initial_condition)
+    process_first_inventory_reorder_point!(copy_args)
     solution_t = get_stage_solution!(copy_args)
     cost = copy_args["state"].X_0_mayer
     if cost <= opt_cost
       opt_cost = cost
       opt_solution = solution_t
-      args = copy(copy_args)
+      opt_args = copy(copy_args)
     end
   end
+  args["state"] = opt_args["state"]
   return opt_solution
 end
-

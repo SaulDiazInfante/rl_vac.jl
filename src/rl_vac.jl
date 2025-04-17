@@ -15,7 +15,7 @@ using JSON, JSON3, DataFrames, Distributions
 using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
-using Debugger, Random
+using Debugger, Random, Revise
 #
 
 include("rl_vac_types.jl")
@@ -52,6 +52,7 @@ export json_to_struct
 export build_testing_parameters
 export get_struct_values
 export build_interval_stencil!
+export process_first_inventory_reorder_point!
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -80,4 +81,5 @@ include("json_to_struct.jl")
 include("build_testing_parameters.jl")
 include("get_struct_values.jl")
 include("build_interval_stencil.jl")
+include("process_first_inventory_reorder_point.jl")
 end

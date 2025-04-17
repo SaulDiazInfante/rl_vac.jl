@@ -6,7 +6,7 @@ Constructs a time interval stencil and updates the numeric solver parameters in-
 # Arguments
 - `args::Dict{String,Any}`: A dictionary containing the key `"numeric_solver_parameters"`, 
   which is expected to be a structure with the following fields:
-  - `stage_interval::Tuple{Float64, Float64}`: The start and end times of the stage interval.
+  - `current_stage_interval::Tuple{Float64, Float64}`: The start and end times of the stage interval.
   - `N_grid_size::Int`: The number of grid points in the interval.
   - `N_refinement_per_step::Int`: The number of refinement steps per grid step.
 
@@ -24,8 +24,8 @@ function build_interval_stencil!(
     args::Dict{String,Any}
 )::LinRange{Float64,Int64}
   numeric_solver_par = copy(args["numeric_solver_parameters"])
-    stage_initial_time = numeric_solver_par.stage_interval[1]
-    stage_final_time = numeric_solver_par.stage_interval[2]
+  stage_initial_time = numeric_solver_par.current_stage_interval[1]
+  stage_final_time = numeric_solver_par.current_stage_interval[2]
     N_grid_size = numeric_solver_par.N_grid_size
     stage_stencil = LinRange(stage_initial_time, stage_final_time, N_grid_size)
     h = stage_stencil[2] - stage_stencil[1]

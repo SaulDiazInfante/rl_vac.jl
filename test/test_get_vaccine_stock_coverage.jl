@@ -1,5 +1,6 @@
 
 args = build_testing_parameters()
+process_first_inventory_reorder_point!(args)
 # Test cases
 @testset "get_vaccine_stock_coverage tests" begin
     inventory_parameters = args["inventory_parameters"]

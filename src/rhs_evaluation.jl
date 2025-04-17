@@ -33,9 +33,9 @@ Evaluates the right-hand side (RHS) of a system of equations for a given state a
 """
 function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
 
-        current_state = args["state"]
-        inventory_par = args["inventory_parameters"]
-        mod_par = args["model_parameters"]
+        current_state = copy(args["state"])
+        inventory_par = copy(args["inventory_parameters"])
+        mod_par = copy(args["model_parameters"])
         dim = length(fieldnames(structState))
         x_new = zeros(Real, dim)
         index = get_stencil_projection(current_state.time, inventory_par)
@@ -46,7 +46,7 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
 
 
         x_new = compute_nsfd_iteration!(args)
-        new_state = args["state"]
+        new_state = copy(args["state"])
         CL_new = new_state.Conservative_Law
         if !isapprox(CL_new, 1.0; atol=1e-12, rtol=0)
                 print("\n (----) WARNING: Conservative low overflow")

@@ -41,7 +41,7 @@ end
 
 Base.@kwdef mutable struct structNumericSolverParameters
     N_grid_size::Int64
-    stage_interval::Vector{Float64}
+    current_stage_interval::Vector{Float64}
     step_size_h::Float64
     N_refinement_per_step::Int64
     refinement_step_size_h::Float64
@@ -123,7 +123,7 @@ end
 function Base.copy(NumericSolverParameters::structNumericSolverParameters)::structNumericSolverParameters
     return structNumericSolverParameters(
         NumericSolverParameters.N_grid_size,
-        NumericSolverParameters.stage_interval,
+        NumericSolverParameters.current_stage_interval,
         NumericSolverParameters.step_size_h,
         NumericSolverParameters.N_refinement_per_step,
         NumericSolverParameters.refinement_step_size_h,
