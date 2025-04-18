@@ -27,7 +27,6 @@ stage_solution = optimize_stage_solution!(args)
     @test state.K_stock_t >= (
         inventory_parameters.delivery_size_k[1] / model_parameters.N
     )
-
     @test initial_condition.time == inventory_parameters.t_delivery[2]
-    @test args["state"].time = initial_condition.time
+    @test args["state"].time == initial_condition.time
 end

@@ -8,5 +8,9 @@
         "rtol",
         "SEIRVDX",
         "testset"
+    ],
+    "julia.NumThreads": 12,
+    "settingsSync.ignoredSettings": [
+        "-julia.NumThreads"
     ]
 }

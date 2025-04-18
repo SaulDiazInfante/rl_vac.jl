@@ -35,5 +35,3 @@ function test_get_solution_path()
             args["initial_condition"] = copy(args["state"])
       end
 end
-
-Debugger.@enter test_get_solution_path()
