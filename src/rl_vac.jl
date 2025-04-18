@@ -53,6 +53,7 @@ export build_testing_parameters
 export get_struct_values
 export build_interval_stencil!
 export process_first_inventory_reorder_point!
+export process_inventory_reorder_point!
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -82,4 +83,5 @@ include("build_testing_parameters.jl")
 include("get_struct_values.jl")
 include("build_interval_stencil.jl")
 include("process_first_inventory_reorder_point.jl")
+include("process_inventory_reorder_point.jl")
 end

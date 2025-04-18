@@ -13,15 +13,21 @@ inventory_parameters = copy(args["inventory_parameters"])
 
 stage_solution = optimize_stage_solution!(args)
 
-initial_condition = copy(args["initial_condition"])
-state = copy(args["state"])
 
-N_grid_size = numeric_solver_parameters.N_grid_size
-pop_size = model_parameters.N
-initial_condition_at_stage_k = copy(initial_condition)
+# Test cases
+@testset "process_inventory_reorder_point!" begin
+    process_inventory_reorder_point!(args)
+    initial_condition = args["initial_condition"]
+    state = args["state"]
+    numeric_solver_parameters = args["numeric_solver_parameters"]
+    inventory_parameters = args["inventory_parameters"]
 
-prior_inventory_size = state.K_stock_t
-prior_delivery_time = initial_condition.time
-current_state_time = state.time
-stage_index = get_stencil_projection(current_state_time, inventory_parameters)
 
+    @test initial_condition.K_stock_t == state.K_stock_t
+    @test state.K_stock_t >= (
+        inventory_parameters.delivery_size_k[1] / model_parameters.N
+    )
+
+    @test initial_condition.time == inventory_parameters.t_delivery[2]
+    @test args["state"].time = initial_condition.time
+end
