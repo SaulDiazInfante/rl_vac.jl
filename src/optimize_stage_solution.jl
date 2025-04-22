@@ -43,7 +43,6 @@ function optimize_stage_solution!(
     initial_condition.opt_policy = rho_k
     copy_args["initial_condition"] = copy(initial_condition)
     copy_args["state"] = copy(initial_condition)
-    process_first_inventory_reorder_point!(copy_args)
     solution_t = get_stage_solution!(copy_args)
     cost = copy_args["state"].X_0_mayer
     if cost <= opt_cost

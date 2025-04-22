@@ -73,6 +73,7 @@ function compute_mr_ou_temp_loss(;
         rng = Xoshiro(seed)
         dW = sqrt(h_res) * randn(rng, Float64, dim)
     else
+        rng = Xoshiro(seed) # delete this after fix the current bug
         dW = sqrt(h_res) * randn(dim)
     end
     # Initialize the first entry.

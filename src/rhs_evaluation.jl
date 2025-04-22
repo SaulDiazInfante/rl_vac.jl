@@ -31,28 +31,72 @@ Evaluates the right-hand side (RHS) of a system of equations for a given state a
 - This function modifies the input `args` dictionary in-place.
 - Ensure that the input dictionary contains all required keys and valid data types.
 """
+
 function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
 
         current_state = copy(args["state"])
         inventory_par = copy(args["inventory_parameters"])
+        stage_initial_condition = copy(args["initial_condition"])
         mod_par = copy(args["model_parameters"])
+        pop_size = mod_par.N
         dim = length(fieldnames(structState))
         x_new = zeros(Real, dim)
         index = get_stencil_projection(current_state.time, inventory_par)
         n_deliveries = size(inventory_par.t_delivery, 1)
         if (index >= n_deliveries)
-                print("WARNING: simulation time OverflowErr")
+                print("WARNING: simulation time Overflow Err")
         end
 
-
         x_new = compute_nsfd_iteration!(args)
+
         new_state = copy(args["state"])
         CL_new = new_state.Conservative_Law
         if !isapprox(CL_new, 1.0; atol=1e-12, rtol=0)
-                print("\n (----) WARNING: Conservative low overflow")
+                print("\n (----) WARNING: Conservative law overflow")
         end
-        X_vac_new = new_state.X_vac
-        X_vac_interval = current_state.previous_stage_cumulative_vaccination
+
+        stock_vaccine_reorder_point_size = stage_initial_condition.K_stock_t
+        previous_stage_X_vac =
+                current_state.previous_stage_cumulative_vaccination
+        previous_stage_vaccine_loss = stage_initial_condition.stock_loss
+
+        new_K_stock = new_state.K_stock_t
+        new_stage_X_vac = new_state.X_vac - previous_stage_X_vac
+        new_stage_vaccine_loss = (
+                new_state.stock_loss - previous_stage_vaccine_loss
+        )
+
+        CL_stock = new_K_stock + new_stage_X_vac + new_stage_vaccine_loss
+        CL_stock_condition = !isapprox(
+                CL_stock,
+                stock_vaccine_reorder_point_size;
+                atol=1e-12,
+                rtol=0
+        )
+        if CL_stock_condition
+                # print("\n (---) ERROR: Inventory  overflow")
+                df = save_state_to_json(current_state, "log_current_state.json")
+                df_ = save_state_to_json(new_state, "log_new_state.json")
+                println("\n (---) CL_stock: $(
+                        @sprintf("%.8f", CL_stock * POP_SIZE)
+                )")
+
+                println("\n (---) reorder inventory size: $(
+                        @sprintf("%.8f", stock_vaccine_reorder_point_size * pop_size)
+                )")
+
+                println("\n\t K_t\t\t X_vac\t\t l")
+                @printf("\t %10.2f\t %10.2f\t %10.2f\n",
+                        new_K_stock * POP_SIZE,
+                        new_stage_X_vac * POP_SIZE,
+                        new_stage_vaccine_loss * POP_SIZE
+                )
+                error("\n (---) ERROR: Inventory  overflow ")
+        end
+
+        new_demand = new_state.X_vac - current_state.X_vac
+        new_vaccine_loss = new_state.stock_loss - current_state.stock_loss
+
         nominal_reserve_inventory = inventory_par.backup_inventory_level
         normalized_reserve_inventory =
                 nominal_reserve_inventory / mod_par.N
@@ -60,7 +104,9 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
         current_stock = current_state.K_stock_t
         sign_effective_stock =
                 sign(
-                        current_stock - (X_vac_new - X_vac_interval) - reserve_inventory
+                        (current_stock - reserve_inventory)
+                        -
+                        (new_demand + new_vaccine_loss)
                 )
         sign_effective_stock_test = (sign_effective_stock < 0.0)
 
@@ -68,28 +114,26 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
                 # Recalibrate the vaccine coverage and vaccination rate
                 print("\n(===) WARNING: reserve vaccine inventory overflow")
                 print("\n(+++) Recalibrating the vaccination rate: ")
-                vaccine_coverage = max(0.0, current_stock - reserve_inventory)
-                time_index = get_stencil_projection(
-                        current_state.time,
-                        mod_par)
-                t_lower_interval = current_state.time
-                t_upper_interval = inventory_par.t_delivery[time_index+1]
-                length_interval = t_upper_interval - t_lower_interval
-                psi_v = -log(1.0 - vaccine_coverage) / length_interval
-                action_t = max(0.0, psi_v)
-                mod_par.psi_v = psi_v
+
+                vaccine_coverage = get_vaccine_stock_coverage(args)
+                vaccination_rate = get_max_vaccination_rate!(vaccine_coverage, args)
+                action_t = max(0.0, vaccination_rate)
+                mod_par.psi_v = vaccination_rate
                 current_state.action = action_t
                 projected_jabs = vaccine_coverage
                 N_pop = mod_par.N
-                scaled_psi_v = psi_v * N_pop
-                msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.8f", psi_v))"
+                scaled_psi_v = vaccination_rate * N_pop
+                msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.8f", vaccination_rate))"
                 msg_02 = "\n\t nominal Psi_V: $(
                                 @sprintf("%.8f", scaled_psi_v
                         )
                 )"
                 print("\n===========================================")
-                print("\nt_lower: ", t_lower_interval)
-                print("\nt_upper: ", t_upper_interval)
+                t_lower = current_state.time
+                t_upper = inventory_par.t_delivery[index+1]
+                print("\nt_lower: ", t_lower)
+                print("\nt_upper: ", t_upper)
+                length_interval = t_upper - t_lower
                 print("\n length_interval: ", length_interval)
                 print(msg_01)
                 print(msg_02)

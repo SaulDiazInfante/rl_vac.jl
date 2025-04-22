@@ -11,7 +11,8 @@ module rl_vac
     include_dependency(path)
     read(path, String)
 =#
-using JSON, JSON3, DataFrames, Distributions
+using JSON, JSON3, DataFrames
+using StructTypes, Distributions
 using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
@@ -19,11 +20,16 @@ using Debugger, Random, Revise
 #
 
 include("rl_vac_types.jl")
+include("constants.jl")
 
 export structState
 export structModelParameters
 export structNumericSolverParameters
 export structInventoryParameters
+export POP_SIZE
+export N_GRIDE_SIZE
+
+
 
 export load_parameters_to_df
 export get_stencil_projection
@@ -54,6 +60,9 @@ export get_struct_values
 export build_interval_stencil!
 export process_first_inventory_reorder_point!
 export process_inventory_reorder_point!
+export save_state_to_csv
+export save_state_to_json
+export load_state_from_json
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -84,4 +93,7 @@ include("get_struct_values.jl")
 include("build_interval_stencil.jl")
 include("process_first_inventory_reorder_point.jl")
 include("process_inventory_reorder_point.jl")
+include("save_state_to_csv.jl")
+include("save_state_to_json.jl")
+include("load_state_from_json.jl")
 end

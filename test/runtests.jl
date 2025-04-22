@@ -5,6 +5,7 @@ using Dates
 using JSON3
 using Random
 using Distributions
+using Debugger
 
 @testset "rl_vac Tests" begin
     include("test_build_testing_parameters.jl")
@@ -25,4 +26,7 @@ using Distributions
     include("test_optimize_stage_solution.jl")
     include("test_process_first_inventory_reorder_point.jl")
     include("test_process_inventory_reorder_point.jl")
+    include("test_save_state_to_csv.jl")
+    include("test_save_state_to_json.jl")
+    include("test_load_state_from_json.jl")
 end

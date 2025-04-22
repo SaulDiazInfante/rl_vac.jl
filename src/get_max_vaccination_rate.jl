@@ -35,7 +35,7 @@ function get_max_vaccination_rate!(
     t_horizon = inventory_par.t_delivery[id+1]
     t_interval_len = t_horizon - state.time
 
-    psi_v = -log(1.0 - vaccine_coverage) / (t_interval_len)
+    psi_v = -log(1.0 - vaccine_coverage) * (t_interval_len)^(-1)
     max_vaccination_rate = max(0.0, psi_v)
     mod_par.psi_v = max_vaccination_rate
     if isapprox(1e-20, max_vaccination_rate; atol=eps(Float64), rtol=0)

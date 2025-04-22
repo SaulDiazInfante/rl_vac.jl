@@ -50,6 +50,8 @@ function compute_nsfd_iteration!(
     X_vac_interval = old_state.previous_stage_cumulative_vaccination
     X_0_mayer = old_state.X_0_mayer
     K = old_state.K_stock_t
+    stage_current_loss_vac = old_state.stock_loss
+    T = old_state.T
     opt_policy = old_state.opt_policy
     action = old_state.action
 
@@ -82,7 +84,7 @@ function compute_nsfd_iteration!(
         :sigma_T => mod_par.sigma_T,
         :kappa => mod_par.kappa,
         :inventory_level => old_state.K_stock_t,
-        :t0 => max(old_state.time, 0),
+        :t0 => max(old_state.time - h, 0),
         :T_t_0 => old_state.T,
         :h_coarse => h,
         :n => numeric_solver_par.N_refinement_per_step,
@@ -159,12 +161,14 @@ function compute_nsfd_iteration!(
     X_vac_new = X_vac + delta_X_vac
 
     temp_lambda_loss = compute_mr_ou_temp_loss(; par_ou...)
-    loss_vac = temp_lambda_loss[:loss_j]
+    new_loss_vac = temp_lambda_loss[:loss_j]
     ou_temp = temp_lambda_loss[:temp_j]
 
     current_stock = K
-    stock_demand = X_vac_new - X_vac_interval
-    K_new = maximum([0.0, -(stock_demand + loss_vac) + current_stock])
+    # stock_demand = X_vac_new - X_vac_interval
+    stock_demand = delta_X_vac
+    K_new = maximum([0.0, -(stock_demand + new_loss_vac) + current_stock])
+    stage_current_loss_vac = stage_current_loss_vac + new_loss_vac
     X_0_mayer_new = X_0_mayer + psi * compute_cost(args)
     x_new[9] = CL_new
     x_new[10] = X_vac_new
@@ -173,7 +177,7 @@ function compute_nsfd_iteration!(
     x_new[13] = K_new
 
     x_new[14] = ou_temp
-    x_new[15] = loss_vac
+    x_new[15] = stage_current_loss_vac
     x_new[16] = action
     x_new[17] = opt_policy
     x_new[18] = index

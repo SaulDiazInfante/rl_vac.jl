@@ -50,7 +50,10 @@ function process_first_inventory_reorder_point!(
         prior_inventory_size + first_normalized_delivery_size
     )
     state.K_stock_t = updated_current_stock
+    initial_condition.K_stock_t = updated_current_stock
     numeric_solver_parameters.current_stage_interval = current_stage_interval
+
+    args["initial_condition"] = initial_condition
     args["state"] = state
     args["numeric_solver_parameters"] = numeric_solver_parameters
 end

@@ -1,0 +1,19 @@
+include("test/test_get_solution_path.jl")
+bp add 23
+w add vaccine_coverage * pop_size
+w add vaccination_rate * pop_size
+w add args["state"].K_stock_t * 26446435.0
+
+w add args["state"].opt_policy
+w add args["initial_condition"].K_stock_t * 26446435.0
+
+# optimize_stage_solution
+
+w add copy_args["state"].K_stock_t * 26446435.0
+bp add 46
+
+
+new_X_vac * 2.6446435e7
+new_K_stock * 2.6446435e7
+(args["initial_condition"]).K_stock_t * 2.6446435e7
+(new_K_stock + new_X_vac) * 2.6446435e7: 1.0848028195922712e6
