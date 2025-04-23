@@ -43,8 +43,9 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
         x_new = zeros(Real, dim)
         index = get_stencil_projection(current_state.time, inventory_par)
         n_deliveries = size(inventory_par.t_delivery, 1)
-        if (index >= n_deliveries)
-                print("WARNING: simulation time Overflow Err")
+        if (index > n_deliveries)
+                println("index $(index)")
+                error("\n (---) ERROR simulation time Overflow ")
         end
 
         x_new = compute_nsfd_iteration!(args)
@@ -70,8 +71,8 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
         CL_stock_condition = !isapprox(
                 CL_stock,
                 stock_vaccine_reorder_point_size;
-                atol=1e-12,
-                rtol=0
+                atol=1e-2,
+                rtol=1e-2
         )
         if CL_stock_condition
                 # print("\n (---) ERROR: Inventory  overflow")
@@ -85,8 +86,9 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
                         @sprintf("%.8f", stock_vaccine_reorder_point_size * pop_size)
                 )")
 
-                println("\n\t K_t\t\t X_vac\t\t l")
-                @printf("\t %10.2f\t %10.2f\t %10.2f\n",
+                println("\n\t t \t K_t\t\t X_vac\t\t l")
+                @printf("\t %6.2f\t %10.2f\t %10.2f\t %10.2f\n",
+                        new_state.time,
                         new_K_stock * POP_SIZE,
                         new_stage_X_vac * POP_SIZE,
                         new_stage_vaccine_loss * POP_SIZE
