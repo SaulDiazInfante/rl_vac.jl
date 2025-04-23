@@ -57,8 +57,8 @@ function compute_nsfd_iteration!(
 
     index = get_stencil_projection(old_state.time, inventory_par)
     n_deliveries = size(inventory_par.t_delivery, 1)
-    if (index >= n_deliveries)
-        print("WARNING: simulation time OverflowErr")
+    if (index > n_deliveries)
+        @warn "WARNING: simulation time Overflow"
     end
 
     omega_v = mod_par.omega_v

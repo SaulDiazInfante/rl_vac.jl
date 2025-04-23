@@ -29,4 +29,6 @@ using Debugger
     include("test_save_state_to_csv.jl")
     include("test_save_state_to_json.jl")
     include("test_load_state_from_json.jl")
+    include("test_get_solution_path.jl")
+    include("test_save_interval_solution.jl")
 end

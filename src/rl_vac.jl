@@ -39,7 +39,7 @@ export compute_cost
 export get_vaccine_stock_coverage
 export get_max_vaccination_rate!
 export get_stage_solution!
-# export get_solution_path!
+export get_solution_path!
 export save_interval_solution
 export montecarlo_sampling
 export get_interpolated_solution
@@ -72,7 +72,7 @@ include("compute_cost.jl")
 include("get_vaccine_stock_coverage.jl")
 include("get_max_vaccination_rate.jl")
 include("get_stage_solution.jl")
-#include("get_solution_path.jl")
+include("get_solution_path.jl")
 include("save_interval_solution.jl")
 include("montecarlo_sampling.jl")
 include("get_interpolated_solution.jl")

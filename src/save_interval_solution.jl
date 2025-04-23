@@ -1,47 +1,29 @@
 """
-    save_interval_solution(time, x;
-        header_str =
-            ["time", "S", "E",
-            "I_S", "I_A", "R",
-            "D", "V", "CL",
-            "X_vac", "K_stock_t", "action"],
-        file_name = "solution_interval.csv"
-        )
+    save_interval_solution(sol::Matrix{Real})::DataFrame
 
-Return and save the state of model on discrete time values between time arrive deliveries.       
+Saves the interval solution represented by the matrix `sol` into a CSV file and returns it as a DataFrame.
 
 # Arguments
-- `time::Vector`: Discrete time values where the system state is approximate.  
-- `x::DataFrame`: System current state
-- `header_str::Vector`: action, that is a proportion of the total jabs projected
-  that would be administrated.
-- `k::Float`: current level of the vaccine-stock.
-- `parameters::DataFrame`: current parameters.
-...
+- `sol::Matrix{Real}`: A matrix containing the interval solution data. Each column corresponds to a field in the `structState` type.
+
+# Returns
+- `DataFrame`: A DataFrame representation of the interval solution.
+
+# Details
+- The column names for the DataFrame are derived from the field names of the `structState` type.
+- The file name for the CSV is generated dynamically based on the value of the `:t_index_interval` column in the first row of the DataFrame. The file is saved in the current working directory with the name format `"interval_solution_0<idx>.csv"`, where `<idx>` is the value of `:t_index_interval`.
+
+# Dependencies
+- Requires the `DataFrames` and `CSV` packages to be available in the environment.
+
+# Example
 """
-function save_interval_solution(
-    x;
-    header_str = [
-        "time", "S", "E",
-        "I_S", "I_A", "R",
-        "D", "V", "CL",
-        "X_vac", "X_0_mayer", "K_stock_t",
-        "T", "loss", "action",
-        "opt_policy", "t_interval_idx"
-    ],
-    file_name = "solution_interval.csv"
-)
-    data = x
-    df_solution = (
-        DataFrame(
-            Dict(
-                zip(
-                    header_str,
-                    [data[:, i] for i in 1:size(data, 2)]
-                )
-            )
-        )
-    )
-    CSV.write(file_name, df_solution)
-    return df_solution;
+
+function save_interval_solution(sol::Matrix{Real})::DataFrame
+    col_names = fieldnames(structState)
+    df_interval_solution = DataFrame(sol, collect(col_names))
+    idx = df_interval_solution[1, :t_index_interval]
+    file_name = "interval_solution_0$(idx).csv"
+    CSV.write(file_name, df_interval_solution)
+    return df_interval_solution
 end
