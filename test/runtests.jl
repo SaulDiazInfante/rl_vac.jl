@@ -31,4 +31,5 @@ using Debugger
     include("test_load_state_from_json.jl")
     include("test_get_solution_path.jl")
     include("test_save_interval_solution.jl")
+    include("test_save_solution_path.jl")
 end

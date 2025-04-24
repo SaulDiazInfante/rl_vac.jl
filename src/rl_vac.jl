@@ -63,6 +63,7 @@ export process_inventory_reorder_point!
 export save_state_to_csv
 export save_state_to_json
 export load_state_from_json
+export save_solution_path
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -96,4 +97,5 @@ include("process_inventory_reorder_point.jl")
 include("save_state_to_csv.jl")
 include("save_state_to_json.jl")
 include("load_state_from_json.jl")
+include("save_solution_path.jl")
 end

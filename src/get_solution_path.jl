@@ -28,7 +28,7 @@ in-place and returns a list of matrices representing the solution path.
 - The function modifies the `args` dictionary in-place, updating the `"state"` and `"initial_condition"` keys.
 """
 
-function get_solution_path!(args::Dict{String,Any})::Vector{Matrix{Real}}
+function get_solution_path!(args::Dict{String,Any})::Matrix{Real}
     process_first_inventory_reorder_point!(args)
     inventory_parameters = copy(args["inventory_parameters"])
     solution_list = Matrix{Real}[]
