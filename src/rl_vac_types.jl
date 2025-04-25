@@ -54,10 +54,10 @@ Base.@kwdef mutable struct structInventoryParameters
     backup_inventory_level::Float64
     t_delivery::Vector{Float64}
     delivery_size_k::Vector{Float64}
-    yll_weight::Vector{Float64}
-    yld_weight::Vector{Float64}
-    stock_cost_weight::Vector{Float64}
-    campaign_cost_weight::Vector{Float64}
+    yll_weight::Float64
+    yld_weight::Float64
+    stock_cost_weight::Float64
+    campaign_cost_weight::Float64
     operational_stock_levels::Vector{Float64}
 end
 

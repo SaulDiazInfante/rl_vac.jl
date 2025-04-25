@@ -32,4 +32,8 @@ using Debugger
     include("test_get_solution_path.jl")
     include("test_save_interval_solution.jl")
     include("test_save_solution_path.jl")
+    include("test_log_to_file.jl")
+    include("test_check_inventory_integrity.jl")
+    include("test_check_vaccine_inventory_sufficiency.jl")
+    include("test_adapt_vaccination_rate_to_inventory.jl")
 end

@@ -22,10 +22,8 @@ function get_vaccine_stock_coverage(
 )::Float64
     state = args["state"]
     inventory_parameters = args["inventory_parameters"]
-    model_parameters = args["model_parameters"]
     backup_inventory_level = inventory_parameters.backup_inventory_level
-    population_size = model_parameters.N
-    normalized_backup_inventory_level = backup_inventory_level / population_size
+    normalized_backup_inventory_level = backup_inventory_level / POP_SIZE
     current_inventory_size = state.K_stock_t
     x_coverage = maximum([
         current_inventory_size - normalized_backup_inventory_level,

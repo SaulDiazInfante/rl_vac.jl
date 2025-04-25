@@ -1,5 +1,5 @@
 @testset "load_state_from_json tests" begin
-    test_json_file = "./test_data/test_parameters_model.json"
+    test_json_file = "test_data/test_parameters_model.json"
     test_data = Dict("param1" => 1, "param2" => 2, "param3" => 3)
     mkpath(dirname(test_json_file))
     open(test_json_file, "w") do io

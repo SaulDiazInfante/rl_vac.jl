@@ -1,3 +1,6 @@
+using rl_vac
+using Debugger
+
 @testset "get_solution_path! tests" begin
       args = build_testing_parameters()
       solution_path = get_solution_path!(args)
@@ -9,3 +12,7 @@
       @test haskey(args, "state")
       @test haskey(args, "initial_condition")
 end
+
+
+#
+#Debugger.@enter get_solution_path!(args)

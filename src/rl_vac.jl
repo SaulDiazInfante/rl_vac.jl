@@ -17,6 +17,7 @@ using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
 using Debugger, Random, Revise
+using Logging
 #
 
 include("rl_vac_types.jl")
@@ -28,8 +29,6 @@ export structNumericSolverParameters
 export structInventoryParameters
 export POP_SIZE
 export N_GRIDE_SIZE
-
-
 
 export load_parameters_to_df
 export get_stencil_projection
@@ -64,6 +63,10 @@ export save_state_to_csv
 export save_state_to_json
 export load_state_from_json
 export save_solution_path
+export log_to_file
+export check_inventory_integrity
+export check_vaccine_inventory_sufficiency
+export adapt_vaccination_rate_to_inventory!
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -98,4 +101,8 @@ include("save_state_to_csv.jl")
 include("save_state_to_json.jl")
 include("load_state_from_json.jl")
 include("save_solution_path.jl")
+include("log_to_file.jl")
+include("check_inventory_integrity.jl")
+include("check_vaccine_inventory_sufficiency.jl")
+include("adapt_vaccination_rate_to_inventory.jl")
 end

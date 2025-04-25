@@ -21,35 +21,37 @@ Compute the total cost based on the provided arguments.
 The function calculates the cost components based on the difference between the current state and the initial condition, using the provided model and inventory parameters. The total cost is the sum of these components.
 """
 function compute_cost(args::Dict{String,Any})::Float64
-    initial_condition = args["initial_condition"]
-    state = args["state"]
-    mod_par = args["model_parameters"]
-    inventory_par = args["inventory_parameters"]
+  initial_condition = args["initial_condition"]
+  state = args["state"]
+  mod_par = args["model_parameters"]
+  inventory_par = args["inventory_parameters"]
+  m_yll = inventory_par.yll_weight
+  m_yld = inventory_par.yld_weight
+  m_stock_cost = inventory_par.stock_cost_weight
+  m_campaign_cost = inventory_par.campaign_cost_weight
 
+  E = state.E
+  E_0 = initial_condition.E
+  K_stock_t = state.K_stock_t
 
-    m_yll = inventory_par.yll_weight[1]
-    m_yld = inventory_par.yld_weight[1]
-    m_stock_cost = inventory_par.stock_cost_weight[1]
-    m_campaign_cost = inventory_par.campaign_cost_weight[1]
+  X_vac = state.X_vac
+  X_vac_0 = initial_condition.X_vac
 
+  p = mod_par.p
+  delta_e = mod_par.delta_e
+  theta = mod_par.theta
+  alpha_s = mod_par.alpha_s
 
-    E = state.E
-    E_0 = initial_condition.E
-    K_stock_t = state.K_stock_t
-    K_stock_t_0 = initial_condition.K_stock_t
-
-    X_vac = state.X_vac
-    X_vac_0 = initial_condition.X_vac
-
-    p = mod_par.p
-    delta_e = mod_par.delta_e
-    theta = mod_par.theta
-    alpha_s = mod_par.alpha_s
-
-    yll = m_yll * p * delta_e * (E - E_0)
-    yld = m_yld * theta * alpha_s * (E - E_0)
-    stock_cost = m_stock_cost * (K_stock_t - K_stock_t_0)
-    campaign_cost = m_campaign_cost * (X_vac - X_vac_0)
-    cost = sum([yll, yld, stock_cost, campaign_cost])
-    return cost
+  yll = m_yll * p * delta_e * (E - E_0)
+  yld = m_yld * theta * alpha_s * (E - E_0)
+  stock_cost = m_stock_cost * K_stock_t
+  campaign_cost = m_campaign_cost * (X_vac - X_vac_0)
+  vector_cost = [
+    yll,
+    yld,
+    stock_cost,
+    campaign_cost
+  ]
+  cost = sum(vector_cost)
+  return cost
 end

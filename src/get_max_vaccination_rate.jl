@@ -32,14 +32,23 @@ function get_max_vaccination_rate!(
     inventory_par = args["inventory_parameters"]
     mod_par = args["model_parameters"]
     id = get_stencil_projection(state.time, inventory_par)
-    t_horizon = inventory_par.t_delivery[id+1]
+    NUM_DELIVERY = length(inventory_par.t_delivery)
+    idx = min(id + 1, NUM_DELIVERY)
+    t_horizon = inventory_par.t_delivery[idx]
     t_interval_len = t_horizon - state.time
 
-    psi_v = -log(1.0 - vaccine_coverage) * (t_interval_len)^(-1)
-    max_vaccination_rate = max(0.0, psi_v)
+    if isapprox(1e-20, t_interval_len; atol=eps(Float64), rtol=0)
+        @warn "Warning: time interval length is zero or less than eps(Float64)"
+        @info "Then we set vaccination rate interval is zero — setting rate to"
+        max_vaccination_rate = 0.0
+    else
+        psi_v = -log(1.0 - vaccine_coverage) / t_interval_len
+        max_vaccination_rate = max(0.0, psi_v)
+    end
+
     mod_par.psi_v = max_vaccination_rate
     if isapprox(1e-20, max_vaccination_rate; atol=eps(Float64), rtol=0)
-        print("Warning: zero vaccination rate estimated")
+        @warn "Warning: zero vaccination rate estimated"
     end
     args["model_parameters"] = mod_par
     return max_vaccination_rate

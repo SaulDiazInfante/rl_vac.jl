@@ -1,5 +1,4 @@
 @testset "rhs_evaluation! tests" begin
-
     args = build_testing_parameters()
     process_first_inventory_reorder_point!(args)
     result = rhs_evaluation!(args)
