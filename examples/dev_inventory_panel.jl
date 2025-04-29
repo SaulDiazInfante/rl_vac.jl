@@ -1,91 +1,140 @@
-args = build_testing_parameters()
-process_first_inventory_reorder_point!(args)
-initial_condition = copy(args["initial_condition"])
-state = copy(args["state"])
-model_parameters = copy(args["model_parameters"])
-numeric_solver_parameters = copy(args["numeric_solver_parameters"])
-inventory_parameters = copy(args["inventory_parameters"])
+using MakiePublication
+using CairoMakie
+# using GLMakie
+using rl_vac
+# using LaTeXStrings
+using DataFrames
+using CSV
+CairoMakie.activate!()
+const CRITICAL_TEMP = -70.0
 
-list_solution = Matrix{Real}[]
-df_solution = DataFrame()
+#args = build_testing_parameters()
+#raw_sol = get_solution_path!(args)
+#save_solution_path(raw_sol)
 
-vaccine_coverage = get_vaccine_stock_coverage(args)
-vaccination_rate = get_max_vaccination_rate!(vaccine_coverage, args)
-args["state"].action = vaccination_rate
-args["initial_condition"].action = vaccination_rate
-stage_solution = optimize_stage_solution!(args)
-push!(list_solution, stage_solution)
 
-# Plotting
-fig = Figure(resolution=(800, 600))
+function interactive_plot(df::DataFrame, file_name::AbstractString)
+    COLORS = Dict(
+        :inventory => :dodgerblue,
+        :loss => :orangered,
+        :temp => :seagreen,
+        :temp_clipped => :darkorange,
+        :threshold => :crimson
+    )
 
-t = stage_solution[:, 1]
-y1 = POP_SIZE * stage_solution[:, 13]
-y2 = POP_SIZE * stage_solution[:, 15]
-y3 = stage_solution[:, 14]
-y3_active_loss = max.(-70.0, y3)
-points = Point2f.(t, y3_active_loss)
-ax1 = Axis(
-    fig[1, 1],
-    title="Inventory Size (vaccine jabs)",
-    ylabel=L"K^{t_{n}^{k}} "
-)
-ax2 = Axis(
-    fig[2, 1],
-    title="Inventory Loss (vaccine jabs)",
-    ylabel=L" L^{t_{n}^{(k)}}"
-)
-ax3 = Axis(
-    fig[3, 1],
-    title="Temperature (celsius)",
-    ylabel=L"T(t)",
-    xlabel=L"t (\text{days})"
-)
+    golden_ratio = (1.0 + sqrt(5.0)) / 2.0
+    width_mm = 190.0
+    height_mm = width_mm / golden_ratio
+    dpi = 72.0
 
-linkxaxes!(ax1, ax2, ax3)
-lines!(ax1, t, y1)
-lines!(ax2, t, y2)
-lines!(ax3, t, y3)
-lines!(ax3, t, y3_active_loss)
+    width_px = round(Int, width_mm * dpi / 25.4)
+    height_px = round(Int, height_mm * dpi / 25.4)
 
-poly!(
-    ax3,
-    points,  # y coordinates
-    color=(:blue, 0.2),                 # transparent blue
-    strokewidth=0
-)
 
-hlines!(ax3, -70.0, color=:red, linestyle=:dash)
+    fig = Figure(
+        size=(width_px, height_px),
+        fontsize=14
+    )
 
-save("InventoryPanel01.pdf", fig)
-fig
-time_reorder_points = inventory_parameters.t_delivery
+    ax1 = Axis(
+        fig[1, 1],
+        title="Inventory Size (vaccine jabs)",
+        ylabel=L"K^{t_{n}^{(k)}} "
+    )
+    ax2 = Axis(
+        fig[2, 1],
+        title="Inventory Loss (vaccine jabs)",
+        ylabel=L" L^{t_{n}^{(k)}}"
+    )
+    ax3 = Axis(
+        fig[3, 1],
+        title="Temperature (celsius)",
+        ylabel=L"T(t)",
+        xlabel=L"t (\text{days})"
+    )
+    axs = [ax1, ax2, ax3]
+    labels = ["(A)", "(B)", "(C)"]
+    font_size = 18
+    hv_offset = (4, -1)
 
-for (k, t_k) in enumerate(time_reorder_points[2:end-1])
-    println("reorder time-point: ($k, $t_k)")
-    process_inventory_reorder_point!(args)
-    vaccine_coverage = get_vaccine_stock_coverage(args)
-    vaccination_rate = get_max_vaccination_rate!(vaccine_coverage, args)
-    args["state"].action = vaccination_rate
-    args["initial_condition"].action = vaccination_rate
-    stage_solution = optimize_stage_solution!(args)
-    push!(list_solution, stage_solution)
-    t = stage_solution[:, 1]
-    y1 = POP_SIZE * stage_solution[:, 13]
-    y2 = POP_SIZE * stage_solution[:, 15]
-    y3 = stage_solution[:, 14]
+    for (ax, label) in zip(axs, labels)
+        text!(
+            ax,
+            0, 1,
+            text=label,
+            font=:bold,
+            align=(:left, :top),
+            offset=hv_offset,
+            space=:relative,
+            fontsize=font_size
+        )
+    end
+    t = df.time
+    y1 = POP_SIZE * df[:, :K_stock_t]
+    y2 = POP_SIZE * df[:, :stock_loss]
+    y3 = df[:, :T]
 
-    y3_active_loss = max.(-70.0, y3)
-    points = Point2f.(t, y3_active_loss)
+    y3_active_loss = max.(CRITICAL_TEMP, y3)
+    #
+    linkxaxes!(ax1, ax2, ax3)
+    lines!(
+        ax1,
+        t,
+        y1;
+        linestyle=:dot,
+        color=:black
+    )
 
-    lines!(ax1, t, y1)
-    lines!(ax2, t, y2)
-    lines!(ax3, t, y3)
-    hlines!(ax3, -70.0, color=:red, linestyle=:dash)
+    scatter!(ax1,
+        t, y1,
+        markersize=2,
+        color=COLORS[:inventory]
+    )
+    lines!(ax2, t, y2, color=COLORS[:loss])
+    lines!(ax3, t, y3, color=COLORS[:temp])
+    lines!(ax3,
+        t, y3_active_loss,
+        color=COLORS[:temp_clipped],
+        linestyle=:solid
+    )
+
     poly!(
         ax3,
-        points,  # y coordinates
-        color=(:blue, 0.2),                 # transparent blue
+        points,
+        color=(COLORS[:temp_clipped], 0.2),
         strokewidth=0
     )
+    hlines!(ax3, -70.0, color=COLORS[:threshold], linestyle=:dash)
+    text!(
+        ax3,
+        -15.0, CRITICAL_TEMP - 4,
+        text="Threshold: -70°C",
+        align=(:left, :bottom),
+        #space=:relative,
+        color=COLORS[:threshold],
+        fontsize=12
+    )
+
+    save(file_name, fig, px_per_unit=10)
+    return fig
 end
+
+file_name = "solution_path(2025-04-25_10:02).csv"
+data_path = joinpath(
+    dirname(@__DIR__),
+    "data/", file_name
+)
+df = CSV.read(data_path, DataFrame)
+
+
+fig_path = joinpath(
+    dirname(@__DIR__),
+    "visualization/",
+    "inventory_panel.png"
+)
+
+with_theme(theme_joss()) do
+    interactive_plot(df, fig_path)
+end
+
+
