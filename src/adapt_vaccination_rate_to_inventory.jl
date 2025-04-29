@@ -37,6 +37,17 @@ function adapt_vaccination_rate_to_inventory!(
     mod_par = current_args["model_parameters"]
     @warn"\n(===): reserve vaccine inventory overflow"
     @info "\n(+++) Recalibrating the vaccination rate: "
+
+    log_path = joinpath(dirname(@__DIR__), "logs/")
+    arg_tag =
+        Dict(
+            "path" => log_path,
+            "prefix_file_name" => "recalibration_",
+            "suffix_file_name" => ".json"
+        )
+    file_name = tag_file(arg_tag)
+    save_state_to_json(current_state, file_name)
+
     vaccine_coverage = get_vaccine_stock_coverage(current_args)
     vaccination_rate = get_max_vaccination_rate!(vaccine_coverage, current_args)
 
@@ -48,7 +59,7 @@ function adapt_vaccination_rate_to_inventory!(
     scaled_psi_v = vaccination_rate * POP_SIZE
     msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.8f", vaccination_rate))"
     msg_02 = "\n\t nominal Psi_V: $(
-                    @sprintf("%.8f", scaled_psi_v
+                    @sprintf("%8.3f", scaled_psi_v
             )
     )"
     print("\n===========================================")
@@ -59,10 +70,13 @@ function adapt_vaccination_rate_to_inventory!(
     print("\nt_lower: ", t_lower)
     print("\nt_upper: ", t_upper)
     length_interval = t_upper - t_lower
-    print("\n length_interval: ", length_interval)
+    print("\nlength_interval$(@sprintf("%5.2f", length_interval))")
     print(msg_01)
     print(msg_02)
-    print("\nActual stock: ", current_stock * POP_SIZE)
+    print("\nActual stock:
+         $(@sprintf("%8.3f", current_stock * POP_SIZE))
+    ")
+
     print("\n\t Projected Jabs: $(
                 @sprintf(
                     "%4.2f",

@@ -24,8 +24,8 @@ function save_solution_path(sol::Matrix{Real})::DataFrame
     col_names = fieldnames(structState)
     df_solution = DataFrame(sol, collect(col_names))
     file_path = joinpath(
-        @__DIR__,
-        "../data/"
+        dirname(@__DIR__),
+        "data/"
     )
     dict_tag = Dict(
         "path" => file_path,
@@ -36,3 +36,4 @@ function save_solution_path(sol::Matrix{Real})::DataFrame
     CSV.write(file_name, df_solution)
     return df_solution
 end
+

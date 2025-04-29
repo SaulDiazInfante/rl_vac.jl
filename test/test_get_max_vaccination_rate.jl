@@ -34,3 +34,4 @@
     vaccine_coverage = get_vaccine_stock_coverage(args)
     result = get_max_vaccination_rate!(vaccine_coverage, args)
 end
+

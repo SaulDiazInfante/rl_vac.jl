@@ -16,9 +16,13 @@ Computes the stencil projection for a given time `t` and a parameter structure `
 - The `maximum` function is applied to the resulting indices to determine the projection.
 """
 
-function get_stencil_projection(t::Float64, par::structInventoryParameters)::Int64
-    stencil = par.t_delivery
-    grid = findall(t .>= stencil)
-    projection = maximum(grid)
-    return projection
+function get_stencil_projection(
+  t::Float64, par::structInventoryParameters
+)::Int64
+  stencil = par.t_delivery
+  NUM_INTERVALS = length(stencil) - 1
+  grid = findall(t .>= stencil)
+  projection = maximum(grid)
+  save_projection = min(NUM_INTERVALS, projection)
+  return save_projection
 end
