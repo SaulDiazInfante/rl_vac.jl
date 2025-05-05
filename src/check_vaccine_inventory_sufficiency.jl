@@ -31,7 +31,7 @@ function check_vaccine_inventory_sufficiency(
     inventory_par = copy(current_args["inventory_parameters"])
     stage_initial_condition = copy(current_args["initial_condition"])
 
-    new_demand = new_state.X_vac - stage_initial_condition.X_vac
+    new_demand = new_state.X_vac - current_state.X_vac
     new_vaccine_loss = new_state.stock_loss - current_state.stock_loss
 
     nominal_reserve_inventory = inventory_par.backup_inventory_level

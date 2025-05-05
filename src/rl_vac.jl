@@ -16,7 +16,7 @@ using StructTypes, Distributions
 using CSV, LaTeXStrings, PlotlyJS
 using Dates, ProgressMeter, Interpolations
 using CairoMakie, StatsBase, MakiePublication, Printf
-using Debugger, Random, Revise
+using Debugger, Random, Revise, Infiltrator
 using Logging
 #
 
@@ -61,6 +61,7 @@ export process_first_inventory_reorder_point!
 export process_inventory_reorder_point!
 export save_state_to_csv
 export save_state_to_json
+export save_inventory_parameters_to_json
 export load_state_from_json
 export save_solution_path
 export log_to_file
@@ -105,4 +106,5 @@ include("log_to_file.jl")
 include("check_inventory_integrity.jl")
 include("check_vaccine_inventory_sufficiency.jl")
 include("adapt_vaccination_rate_to_inventory.jl")
+include("save_inventory_parameters_to_json.jl")
 end

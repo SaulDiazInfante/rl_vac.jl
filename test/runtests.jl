@@ -36,4 +36,5 @@ using Debugger
     include("test_check_inventory_integrity.jl")
     include("test_check_vaccine_inventory_sufficiency.jl")
     include("test_adapt_vaccination_rate_to_inventory.jl")
+    include("test_save_inventory_parameters_to_json.jl")
 end

@@ -55,6 +55,7 @@ function rhs_evaluation!(args::Dict{String,Any})::Vector{Float64}
                 check_vaccine_inventory_sufficiency(current_args, new_state)
 
         if !is_vaccine_demand_satisfied
+                Debugger.@bp
                 x_new = adapt_vaccination_rate_to_inventory!(current_args)
         end
         return x_new

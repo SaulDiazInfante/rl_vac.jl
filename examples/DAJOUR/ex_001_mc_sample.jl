@@ -1,7 +1,8 @@
 using rl_vac
 using DataFrames, CSV, JSON
 
-sampling_size = 100
+sampling_size = 3
+args = build_testing_parameters()
 df_par, df_mc, path_par, path_mc = montecarlo_sampling(
     sampling_size,
     "data/parameters_model.json"

@@ -1,8 +1,8 @@
 using MakiePublication
 using CairoMakie
-# using GLMakie
+using GLMakie
 using rl_vac
-# using LaTeXStrings
+using LaTeXStrings
 using DataFrames
 using CSV
 CairoMakie.activate!()
@@ -24,7 +24,7 @@ function interactive_plot(df::DataFrame, file_name::AbstractString)
 
     golden_ratio = (1.0 + sqrt(5.0)) / 2.0
     width_mm = 190.0
-    height_mm = width_mm / golden_ratio
+    height_mm = width_mm * golden_ratio
     dpi = 72.0
 
     width_px = round(Int, width_mm * dpi / 25.4)
@@ -43,18 +43,23 @@ function interactive_plot(df::DataFrame, file_name::AbstractString)
     )
     ax2 = Axis(
         fig[2, 1],
-        title="Inventory Loss (vaccine jabs)",
-        ylabel=L" L^{t_{n}^{(k)}}"
+        title="Max vaccination rate (vaccine jabs per day)",
+        ylabel=L"$\Psi_v$"
     )
     ax3 = Axis(
         fig[3, 1],
+        title="Inventory Loss (vaccine jabs)",
+        ylabel=L" L^{t_{n}^{(k)}}"
+    )
+    ax4 = Axis(
+        fig[4, 1],
         title="Temperature (celsius)",
         ylabel=L"T(t)",
-        xlabel=L"t (\text{days})"
+        xlabel=L"t\ (\text{days})"
     )
-    axs = [ax1, ax2, ax3]
-    labels = ["(A)", "(B)", "(C)"]
-    font_size = 18
+    axs = [ax1, ax2, ax3, ax4]
+    labels = ["(A)", "(B)", "(C)", "(D)"]
+    font_size = 16
     hv_offset = (4, -1)
 
     for (ax, label) in zip(axs, labels)
@@ -71,12 +76,14 @@ function interactive_plot(df::DataFrame, file_name::AbstractString)
     end
     t = df.time
     y1 = POP_SIZE * df[:, :K_stock_t]
-    y2 = POP_SIZE * df[:, :stock_loss]
-    y3 = df[:, :T]
+    y2 = POP_SIZE * df[:, :action]
+    y3 = POP_SIZE * df[:, :stock_loss]
+    y4 = df[:, :T]
 
-    y3_active_loss = max.(CRITICAL_TEMP, y3)
+    y4_active_loss = max.(CRITICAL_TEMP, y4)
+    points = Point2f.(t, y4_active_loss)
     #
-    linkxaxes!(ax1, ax2, ax3)
+    linkxaxes!(ax1, ax2, ax3, ax4)
     lines!(
         ax1,
         t,
@@ -90,23 +97,24 @@ function interactive_plot(df::DataFrame, file_name::AbstractString)
         markersize=2,
         color=COLORS[:inventory]
     )
-    lines!(ax2, t, y2, color=COLORS[:loss])
-    lines!(ax3, t, y3, color=COLORS[:temp])
-    lines!(ax3,
-        t, y3_active_loss,
+    lines!(ax2, t, y2, color=COLORS[:inventory])
+    lines!(ax3, t, y3, color=COLORS[:loss])
+    lines!(ax4, t, y4, color=COLORS[:temp])
+    lines!(ax4,
+        t, y4_active_loss,
         color=COLORS[:temp_clipped],
         linestyle=:solid
     )
-
+    hlines!(ax4, -70.0, color=COLORS[:threshold], linestyle=:dash)
     poly!(
-        ax3,
+        ax4,
         points,
         color=(COLORS[:temp_clipped], 0.2),
         strokewidth=0
     )
-    hlines!(ax3, -70.0, color=COLORS[:threshold], linestyle=:dash)
+
     text!(
-        ax3,
+        ax4,
         -15.0, CRITICAL_TEMP - 4,
         text="Threshold: -70°C",
         align=(:left, :bottom),
@@ -119,17 +127,17 @@ function interactive_plot(df::DataFrame, file_name::AbstractString)
     return fig
 end
 
-file_name = "solution_path(2025-04-25_10:02).csv"
+file_name = "solution_path(2025-05-04_13:31).csv"
 data_path = joinpath(
     dirname(@__DIR__),
-    "data/", file_name
+    "../data/", file_name
 )
 df = CSV.read(data_path, DataFrame)
 
 
 fig_path = joinpath(
     dirname(@__DIR__),
-    "visualization/",
+    "../visualization/",
     "inventory_panel.png"
 )
 

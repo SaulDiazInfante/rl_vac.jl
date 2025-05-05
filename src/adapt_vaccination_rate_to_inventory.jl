@@ -32,9 +32,9 @@ vaccine stock and recalibrates the rate to avoid inventory overflow.
 function adapt_vaccination_rate_to_inventory!(
     current_args::Dict{String,Any}
 )::Vector{Float64}
-    current_state = current_args["state"]
+    current_state = copy(current_args["state"])
     inventory_par = current_args["inventory_parameters"]
-    mod_par = current_args["model_parameters"]
+    mod_par = copy(current_args["model_parameters"])
     @warn"\n(===): reserve vaccine inventory overflow"
     @info "\n(+++) Recalibrating the vaccination rate: "
 
@@ -48,6 +48,13 @@ function adapt_vaccination_rate_to_inventory!(
     file_name = tag_file(arg_tag)
     save_state_to_json(current_state, file_name)
 
+    current_vaccination_rate = mod_par.psi_v
+    #=
+    (
+        current_state.action * current_state.opt_policy
+    )
+    =#
+
     vaccine_coverage = get_vaccine_stock_coverage(current_args)
     vaccination_rate = get_max_vaccination_rate!(vaccine_coverage, current_args)
 
@@ -57,8 +64,14 @@ function adapt_vaccination_rate_to_inventory!(
     projected_jabs = vaccine_coverage
 
     scaled_psi_v = vaccination_rate * POP_SIZE
-    msg_01 = "\n\t normalized Psi_V: $(@sprintf("%.8f", vaccination_rate))"
-    msg_02 = "\n\t nominal Psi_V: $(
+    msg_00 = "\n\t Current normalized Psi_V: $(
+        @sprintf("%.8f\t%2.1f\t%.8f", current_vaccination_rate,
+            current_state.opt_policy, current_state.action)
+    )"
+    msg_01 = "\n\t Current nominal Psi_V: $(
+        @sprintf("%.8f", current_vaccination_rate * POP_SIZE))"
+    msg_02 = "\n\t new normalized Psi_V: $(@sprintf("%.8f", vaccination_rate))"
+    msg_03 = "\n\t new nominal Psi_V: $(
                     @sprintf("%8.3f", scaled_psi_v
             )
     )"
@@ -71,8 +84,12 @@ function adapt_vaccination_rate_to_inventory!(
     print("\nt_upper: ", t_upper)
     length_interval = t_upper - t_lower
     print("\nlength_interval$(@sprintf("%5.2f", length_interval))")
+    print("\n************************************************\n")
+    print(msg_00)
     print(msg_01)
     print(msg_02)
+    print(msg_03)
+    print("\n************************************************")
     print("\nActual stock:
          $(@sprintf("%8.3f", current_stock * POP_SIZE))
     ")

@@ -1,5 +1,5 @@
 """
-    get_panel_plot(df_mc::DataFrame, pop_size::Float64, n_paths::Int, file_name::AbstractString
+    get_panel_plot(df_mc::DataFrame, n_paths::Int, file_name::AbstractString
     )
 
 Returns a figure that encloses a panel visualization with 
@@ -17,7 +17,6 @@ n_paths realizations.
 
 function get_panel_plot(
     df_mc::DataFrame,
-    pop_size::Float64,
     n_paths::Int,
     file_name::AbstractString
 )
@@ -61,25 +60,25 @@ function get_panel_plot(
         lines!(
             axtop,
             data_path_i[!, :time],
-            pop_size * data_path_i[!, :K_stock_t]
+            POP_SIZE * data_path_i[!, :K_stock_t]
         )
         band!(
             axtop,
             data_path_i[!, :time],
             0.0,
-            pop_size * data_path_i[!, :K_stock_t],
+            POP_SIZE * data_path_i[!, :K_stock_t],
             alpha=0.3
         )
         lines!(
             axmidle,
             data_path_i[!, :time],
-            pop_size * data_path_i[!, :opt_policy] .* data_path_i[!, :action]
+            POP_SIZE * data_path_i[!, :opt_policy] .* data_path_i[!, :action]
         )
         band!(
             axmidle,
             data_path_i[!, :time],
             0.0,
-            pop_size * data_path_i[!, :opt_policy] .* data_path_i[!, :action],
+            POP_SIZE * data_path_i[!, :opt_policy] .* data_path_i[!, :action],
             alpha=0.2
         )
         lines!(
@@ -90,7 +89,7 @@ function get_panel_plot(
         lines!(
             ax_right,
             data_path_i[!, :time],
-            pop_size * data_path_i[!, :I_S]
+            POP_SIZE * data_path_i[!, :I_S]
         )
         filename = file_name * "_0" * string(i) * ".png"
         save(filename, f, px_per_unit=10)
