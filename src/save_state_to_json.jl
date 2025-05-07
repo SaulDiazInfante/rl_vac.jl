@@ -27,7 +27,7 @@ function save_state_to_json(state::structState, filename::String)
     )
     df = DataFrame(dict_state)
 
-    JSON3.write(filename, dict_state)
+    JSON3.write(filename, dict_state, indent=4)
     return df
 end
 

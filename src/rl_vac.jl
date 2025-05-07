@@ -40,7 +40,7 @@ export get_max_vaccination_rate!
 export get_stage_solution!
 export get_solution_path!
 export save_interval_solution
-export montecarlo_sampling
+export generate_montecarlo_samples
 export get_interpolated_solution
 export get_simulation_statistics
 export get_panel_plot
@@ -68,6 +68,7 @@ export log_to_file
 export check_inventory_integrity
 export check_vaccine_inventory_sufficiency
 export adapt_vaccination_rate_to_inventory!
+export setup_mc_simulation
 #
 include("load_parameters_to_df.jl")
 include("get_stencil_projection.jl")
@@ -79,7 +80,7 @@ include("get_max_vaccination_rate.jl")
 include("get_stage_solution.jl")
 include("get_solution_path.jl")
 include("save_interval_solution.jl")
-include("montecarlo_sampling.jl")
+include("generate_montecarlo_samples.jl")
 include("get_interpolated_solution.jl")
 include("get_simulation_statistics.jl")
 include("get_panel_plot.jl")
@@ -107,4 +108,5 @@ include("check_inventory_integrity.jl")
 include("check_vaccine_inventory_sufficiency.jl")
 include("adapt_vaccination_rate_to_inventory.jl")
 include("save_inventory_parameters_to_json.jl")
+include("setup_mc_simulation.jl")
 end
