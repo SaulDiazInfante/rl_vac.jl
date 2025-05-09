@@ -1,6 +1,3 @@
-using Test
-using rl_vac
-using Debugger
 @testset "build_testing_parameters" begin
     mock_data_dir = joinpath(@__DIR__, "../data")
     mkpath(mock_data_dir)

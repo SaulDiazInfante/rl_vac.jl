@@ -42,7 +42,7 @@ function get_solution_path!(args::Dict{String,Any})::Matrix{Real}
 
     time_reorder_points = inventory_parameters.t_delivery
     for (k, t_k) in enumerate(time_reorder_points[2:end-1])
-        println("reorder time-point: ($k, $t_k)")
+        # println("reorder time-point: ($k, $t_k)")
         process_inventory_reorder_point!(args)
         vaccine_coverage = get_vaccine_stock_coverage(args)
         vaccination_rate = get_max_vaccination_rate!(vaccine_coverage, args)

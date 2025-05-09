@@ -25,7 +25,7 @@ function save_solution_path(sol::Matrix{Real})::DataFrame
     df_solution = DataFrame(sol, collect(col_names))
     file_path = joinpath(
         dirname(@__DIR__),
-        "data/"
+        "data"
     )
     dict_tag = Dict(
         "path" => file_path,

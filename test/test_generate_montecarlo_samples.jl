@@ -1,7 +1,7 @@
 using Test
 using rl_vac
 using DataFrames, CSV, JSON
-using Debugger
+using Debugger, ProgressMeter
 @testset "generate_montecarlo_samples tests" begin
     generate_montecarlo_samples(3)
     data_dir = joinpath(@__DIR__, "../data")

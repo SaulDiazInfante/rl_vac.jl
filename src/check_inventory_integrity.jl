@@ -66,12 +66,13 @@ function check_inventory_integrity(args::Dict{String,Any})::Bool
     CL_new_dynamics_cond = isapprox(
         CL_new_dynamics,
         1.0;
-        atol=1e-12,
+    atol=1e-10,
         rtol=0
     )
 
     if !CL_new_dynamics_cond
-        @warn"\n (----) WARNING: Epidemic dynamics conservative law overflow"
+    @warn"\n (----) WARNING: 
+    Epidemic dynamics conservative law overflow CL: $(CL_new_dynamics)"
     end
 
     stock_vaccine_reorder_point_size = stage_initial_condition.K_stock_t

@@ -39,33 +39,33 @@ function generate_montecarlo_samples(
     n = sampling_size
     p = Progress(n, 1, "Sampling")
     copy_args = copy(args)
+
+    data_dir = joinpath(dirname(@__DIR__), "data/mc_sampling")
+    path_mc = joinpath(data_dir, "monte_carlo_paths.csv")
+    # path_initial_condition = joinpath(data_dir, "initial_conditions.csv")
+    path_inventory_parameters = joinpath(data_dir, "inventory_parameters.csv")
     for idx in 1:sampling_size
         sol = get_solution_path!(copy_args)
         df_sol = save_solution_path(sol)
         df_sol.idx_path = fill(idx, nrow(df_sol))
+        CSV.write(path_mc, df_sol; append=true, writeheader=(idx == 1))
         df_mc = vcat(df_mc, df_sol)
 
         copy_args = build_testing_parameters()
         get_stochastic_perturbation!(copy_args)
+
         df_inventory_parameters = save_inventory_parameters_to_json(
-            args["inventory_parameters"],
-            "data/inventory_parameters_$(idx).json"
+            copy_args["inventory_parameters"],
+            "data/inventory_parameters_.json"
         )
         df_inventory_parameters.idx_path = fill(
             idx,
             nrow(df_inventory_parameters)
         )
-        df_initial_condition = save_state_to_json(
-            args["initial_condition"],
-            "data/initial_condition_$(idx).json"
-        )
-        df_initial_condition.idx_path = fill(
-            idx,
-            nrow(df_initial_condition)
-        )
-        df_args_initial_condition = vcat(
-            df_args_initial_condition,
-            df_initial_condition
+        CSV.write(
+            path_inventory_parameters,
+            df_inventory_parameters;
+            append=true, writeheader=(idx == 1)
         )
         df_args_inventory_parameters = vcat(
             df_args_inventory_parameters,
@@ -74,8 +74,7 @@ function generate_montecarlo_samples(
         next!(p)
     end
 
-    data_dir = joinpath(@__DIR__, "../data")
-    data_path = mkpath(data_dir)
+
     cvs_prefix_file_names = [
         "df_mc",
         "df_initial_condition",
@@ -85,12 +84,11 @@ function generate_montecarlo_samples(
 
     for (file_name, df) in zip(cvs_prefix_file_names, dfs)
         df_tag_args = Dict(
-            "path" => data_path,
+            "path" => data_dir,
             "prefix_file_name" => file_name,
             "suffix_file_name" => ".csv"
         )
         df_tag = tag_file(df_tag_args)
-        CSV.write(data_path * file_name * ".csv", df)
         CSV.write(df_tag, df)
     end
 end
